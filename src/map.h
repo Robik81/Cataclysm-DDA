@@ -503,6 +503,17 @@ void add_corpse(int x, int y);
 // Items
  // Accessor that returns a wrapped reference to an item stack for safe modification.
  map_stack i_at(int x, int y);
+ // Const item accessor for examining items on the map without modifying them.
+ const std::vector<item>& i_at(int x, int y) const;
+ // Non-const item accessor for rare cases where items need to be modified en masse.
+ // Do not insert or remove items using this, it can break assumptions about caching.
+ std::vector<item>& i_at_mutable(int x, int y);
+ // Accessors to retrieve a mutable reference to an item.
+ item *get_item( int x, int y, int i );
+ item *get_item( const int x, const int y, std::vector<item>::const_iterator i );
+ item* find_item_by_uid( int x, int y, UID uid );
+ bool find_parents_by_uid( int x, int y, UID uid, std::vector<item*> &parents );
+ itemslice i_stacked(std::vector<item>& items);
  item water_from(const int x, const int y);
  item swater_from(const int x, const int y);
  item acid_from(const int x, const int y);

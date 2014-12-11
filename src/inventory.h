@@ -92,6 +92,10 @@ class inventory
         item &item_by_type(itype_id type);
         item &item_or_container(itype_id type); // returns an item, or a container of it
 
+        item* find_item_by_uid( UID uid );
+        bool find_parents_by_uid( UID uid, std::vector<item*> &parents );
+        void find_ammo( const ammotype &type, std::vector<root_item> &ammo );
+
         int position_by_item(const item *it);  // looks up an item (via pointer comparison)
         int position_by_type(itype_id type);
         /** Return the item position of the item with given invlet, return INT_MIN if

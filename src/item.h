@@ -21,6 +21,11 @@ struct islot_armor;
 class material_type;
 class item_category;
 
+typedef std::reference_wrapper<item> itemref;
+typedef std::pair<int, itemref> intitemref;
+typedef std::list<itemref> listitemref;
+typedef std::vector<itemref> vectoritemref;
+
 // Thresholds for radiation dosage for the radiation film badge.
 const int rad_dosage_thresholds[] = { 0, 30, 60, 120, 240, 500};
 const std::string rad_threshold_colors[] = { _("green"), _("blue"), _("yellow"),
@@ -55,6 +60,33 @@ struct iteminfo {
                  bool LowerIsBetter = false, bool DrawName = true);
 };
 
+struct root_item;
+
+struct position_uid {
+    int position = INT_MIN;     // position of root item
+    UID uid = UID_NONE;         // uid of nested item
+
+    position_uid() = default;
+    position_uid( UID uid ) : uid( uid )
+    {
+    }
+    position_uid( int position, UID uid ) : position( position ), uid( uid )
+    {
+    }
+    position_uid( player &u, root_item ri );
+};
+
+struct root_item {
+    item *root = nullptr;   // root item
+    item *it = nullptr;     // nested item
+
+    root_item() = default;
+    root_item( item *root, item *it );
+    root_item( player &u, position_uid pu );
+
+    std::vector<item*> find_parents();
+};
+
 enum LIQUID_FILL_ERROR {L_ERR_NONE, L_ERR_NO_MIX, L_ERR_NOT_CONTAINER, L_ERR_NOT_WATERTIGHT,
                         L_ERR_NOT_SEALED, L_ERR_FULL
                        };
@@ -65,6 +97,8 @@ enum layer_level {
     WAIST_LAYER,
     OUTER_LAYER,
     BELTED_LAYER,
+    BACKPACK_LAYER,
+    OVER_SHOULDER_LAYER,
     MAX_CLOTHING_LAYER
 };
 
@@ -106,6 +140,28 @@ public:
  void make( const std::string new_type );
  void clear(); // cleanup that's required to re-use an item variable
 
+private:
+ UID uid = UID_NONE;
+public:
+ // checks if item has same uid as parameter
+ bool is_uid( UID uid ) const;
+ // use if you need uid from the item, if item does not have uid assigned yet, it is generated
+ // for check if item has specific uid, use is_uid() function instead
+ UID get_uid();
+ // recursively tries to find item with specified uid, returns nullptr if not found
+ item* find_item( UID uid );
+/**
+ * Finds item with specified uid and its parents (containers it is in) up to calling item included
+ * @param uid Unique item identifier
+ * @param &parents Supply the vector for found item and its parents
+ * @return Returns true if item is found
+ */
+ bool find_parents( UID uid, std::vector<item*> &parents );
+ bool is_ammo( const ammotype &type ) const;
+ bool find_ammo( const ammotype &type, std::vector<item *> &ammo );
+ bool has_label( ) const;
+ std::string label( unsigned int quantity = 0 ) const;
+
  // returns the default container of this item, with this item in it
  item in_its_container();
 
@@ -128,8 +184,9 @@ public:
  int noise() const;
  int burst_size() const;
  ammotype ammo_type() const;
- int pick_reload_ammo(player &u, bool interactive);
- bool reload(player &u, int pos);
+ position_uid pick_reload_ammo(player &u, bool interactive);
+ bool reload(player &u, position_uid pu);
+ void next_mode();
  std::string skill() const;
 
     using JsonSerializer::serialize;
@@ -147,8 +204,8 @@ public:
  void load_legacy(std::stringstream & dump);
  void load_info(std::string data);
  //std::string info(bool showtext = false); // Formatted for human viewing
- std::string info(bool showtext = false) const;
- std::string info(bool showtext, std::vector<iteminfo> *dump, bool debug = false) const;
+ std::string info(bool showtext = false);
+ std::string info(bool showtext, std::vector<iteminfo> *dump, bool debug = false);
  char symbol() const;
  nc_color color() const;
  int price() const;
@@ -181,6 +238,8 @@ public:
          */
         bool merge_charges( const item &rhs );
  void put_in(item payload);
+ void pull_out(item *payload);
+ void pull_out(item *payload, long quantity);
  void add_rain_to_container(bool acid, int charges = 1);
 
  int weight() const;
@@ -242,9 +301,29 @@ public:
  * Fill container with liquid up to its capacity.
  * @param liquid Liquid to fill the container with.
  * @param err Contains error message if function returns false.
+ * @param amount_to_move limits max amount of moved liquid, 0 = unlimited
  * @return Returns false in case of error
  */
- bool fill_with( item &liquid, std::string &err );
+ bool fill_with( item &liquid, std::string &err, long amount_to_move = 0 );
+/**
+ * Load container with item, checks for errors
+ * @param it Item to load the container with.
+ * @param err Contains error message if function returns false.
+ * @return Returns false in case of error
+ */
+ bool load_with( item &it, std::string &err );
+ int get_container_capacity() const;
+ // max_size is in ml ( 1 volume = 250 ml )
+ int get_container_max_size() const;
+ int get_container_used_capacity() const;
+ int get_container_remaing_capacity() const;
+ void get_container_content( listitemref &items );
+ std::vector<intitemref> get_container_content();
+ void get_container_food( listitemref &items, const player *u = nullptr );
+ vectoritemref get_container_food( const player *u = nullptr );
+ bool static compare( const item &first, const item &second );
+ bool static compare_tname( const item &first, const item &second );
+ bool static same( const item &first, const item &second );
  bool has_flag(const std::string &f) const;
  bool contains_with_flag (std::string f) const;
  bool has_quality(std::string quality_id) const;
@@ -453,7 +532,10 @@ public:
  bool is_disassemblable() const;
  bool is_container_empty() const;
  bool is_container_full() const;
+ bool is_container_mixed() const;
  bool is_funnel_container(int &bigger_than) const;
+ bool is_container_liquid() const;
+ bool is_container_liquid( itype_id liquid ) const;
 
  bool is_tool() const;
  bool is_software() const;

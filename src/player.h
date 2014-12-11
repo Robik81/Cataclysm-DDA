@@ -27,6 +27,24 @@ class mission;
 class profession;
 nc_color encumb_color(int level);
 
+// length of turns to show player's posthumous contributions
+const int DEATHCAM_LENGTH = 15;
+
+enum deathcam_state {
+    DC_OFF,
+    DC_ON,
+    DC_DONE
+};
+
+enum consume_loc {
+    CONSUME_NONE = 0,
+    CONSUME_WEAPON,
+    CONSUME_WEAPON_CONTAINER,
+    CONSUME_INVENTORY,
+    CONSUME_INVENTORY_CONTAINER,
+    CONSUME_WORN_CONTAINER
+};
+
 struct special_attack {
     std::string text;
     int bash;
@@ -658,6 +676,26 @@ class player : public Character, public JsonSerializer, public JsonDeserializer
         int drink_from_hands(item &water);
         /** Used for eating object at pos, returns true if object is successfully eaten */
         bool consume(int pos);
+    private:
+        /** Query item to consume */
+        item* consume_query_item( const vectoritemref items );
+        /** For NPC, chooses random item to consume */
+        item* consume_random_item( const vectoritemref items );
+        /** Choose item for consumption */
+        root_item consume_choose_item( const int target_position, consume_loc &loc );
+        /** Food / Drink consumption */
+        bool consume_food( item *it, it_comest *comest, int &used_amount );
+        /** Medicine consumption */
+        bool consume_med( item *it, it_comest *comest, int &used_amount );
+        /** Bionics consumption */
+        bool consume_bio( item *it, int &used_amount );
+        /** Cleanup after consumption ( remove charges and empty items ) */
+        void consume_cleanup( consume_loc loc, int target_position, const root_item, int used_amount );
+        /** Remove item from its container and returns container */
+        std::vector<item*> consume_remove_item( const root_item cit );
+        /** Checks if we should drop container or not */
+        bool options_drop_container( const item &it ) const;
+    public:
         /** Used for eating entered comestible, returns true if comestible is successfully eaten */
         bool eat(item *eat, it_comest *comest);
         /** Handles the effects of consuming an item */
@@ -741,6 +779,12 @@ class player : public Character, public JsonSerializer, public JsonDeserializer
         bool wearing_something_on(body_part bp) const;
         /** Returns true if the player is wearing something on their feet that is not SKINTIGHT */
         bool is_wearing_shoes(std::string side = "both") const;
+        item* find_item_by_uid( UID uid );
+        bool find_parents_by_uid( UID uid, std::vector<item*> &parents );
+        /** Returns true if the player is wearing BACKPACK */
+        bool is_wearing_backpack() const;
+        /** Returns worn backpack if the player is wearing BACKPACK or nullptr */
+        item* get_worn_backpack();
         /** Returns 1 if the player is wearing something on both feet, .5 if on one, and 0 if on neither */
         double footwear_factor() const;
         /** Returns 1 if the player is wearing an item of that count on one foot, 2 if on both, and zero if on neither */
@@ -965,10 +1009,10 @@ class player : public Character, public JsonSerializer, public JsonDeserializer
          * the player inventory, the weapon slot and the worn items. */
         std::set<char> allocated_invlets() const;
         bool has_mission_item(int mission_id) const; // Has item with mission_id
-        std::vector<item *> has_ammo(ammotype at); // Returns a list of the ammo
         // same as has_ammo, but all items with typeId() != id are removed,
         // returned items all the the same type: id.
         std::vector<item *> has_exact_ammo( const ammotype &at, const itype_id &id );
+        std::vector<root_item> has_ammo( ammotype at ); // Returns a list of the ammo
         /**
          * Check whether the player has a gun that uses the given type of ammo.
          */

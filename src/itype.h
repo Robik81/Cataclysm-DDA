@@ -81,6 +81,10 @@ struct islot_container {
      * Volume of the item does not include volume of the content.
      */
     bool rigid;
+    /**
+     * Max volume of one content item in ml (1 volume = 250ml).
+     */
+    int max_size;
 
     islot_container()
     : contains( 0 )
@@ -88,6 +92,7 @@ struct islot_container {
     , watertight( false )
     , preserves( false )
     , rigid( false )
+    , max_size( 0)
     {
     }
 };

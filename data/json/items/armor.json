@@ -2769,7 +2769,10 @@
         "color" : "brown",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 25,
+        "storage" : 10,
+        "container_data": {
+            "contains": 25
+        },
         "symbol" : "[",
         "description" : "A custom-built lightweight runner pack.  Durable and carefully crafted to hold as much stuff as possible.",
         "price" : 24000,
@@ -2781,7 +2784,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 0,
         "bashing" : -3,
-        "flags" : ["WATER_FRIENDLY", "STURDY", "BELTED"],
+        "flags" : ["WATER_FRIENDLY", "STURDY", "BACK", "BACKPACK"],
         "coverage" : 30,
         "material_thickness" : 2
     },
@@ -2793,7 +2796,10 @@
         "color" : "brown",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 50,
+        "storage" : 10,
+        "container_data": {
+            "contains": 50
+        },
         "symbol" : "[",
         "description" : "A custom-built backpack.  Durable and carefully crafted to hold as much stuff as possible.",
         "price" : 24000,
@@ -2805,7 +2811,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 1,
         "bashing" : -3,
-        "flags" : ["WATER_FRIENDLY", "STURDY", "BELTED"],
+        "flags" : ["WATER_FRIENDLY", "STURDY", "BACK", "BACKPACK"],
         "coverage" : 30,
         "material_thickness" : 2
     },
@@ -2817,7 +2823,10 @@
         "color" : "dark_gray",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 100,
+        "storage" : 10,
+        "container_data": {
+            "contains": 100
+        },
         "symbol" : "[",
         "description" : "A custom-built heavy backpack.  Durable and carefully crafted to hold as much stuff as possible.",
         "price" : 24000,
@@ -2829,7 +2838,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 2,
         "bashing" : -3,
-        "flags" : ["WATER_FRIENDLY", "STURDY", "BELTED", "OVERSIZE"],
+        "flags" : ["WATER_FRIENDLY", "STURDY", "BACK", "BACKPACK", "OVERSIZE"],
         "coverage" : 40,
         "material_thickness" : 2
     },
@@ -2841,7 +2850,10 @@
         "color" : "dark_gray",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 150,
+        "storage" : 10,
+        "container_data": {
+            "contains": 150
+        },
         "symbol" : "[",
         "description" : "A custom-built heavy duffel bag.  Durable and carefully crafted to hold as much stuff as possible.",
         "price" : 24000,
@@ -2853,7 +2865,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 3,
         "bashing" : -3,
-        "flags" : ["WATER_FRIENDLY", "STURDY", "BELTED", "OVERSIZE"],
+        "flags" : ["WATER_FRIENDLY", "STURDY", "BACK", "BACKPACK", "OVERSIZE"],
         "coverage" : 40,
         "material_thickness" : 2
     },
@@ -3811,7 +3823,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 1,
         "bashing" : 6,
-        "flags" : ["VARSIZE", "STURDY", "BELTED"],
+        "flags" : ["VARSIZE", "STURDY"],
         "coverage" : 85,
         "material_thickness" : 4
     },
@@ -3837,7 +3849,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 3,
         "bashing" : 8,
-        "flags" : ["VARSIZE", "STURDY", "BELTED"],
+        "flags" : ["VARSIZE", "STURDY"],
         "coverage" : 85,
         "material_thickness" : 5
     },
@@ -3863,7 +3875,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 4,
         "bashing" : 8,
-        "flags" : ["VARSIZE", "STURDY", "BELTED"],
+        "flags" : ["VARSIZE", "STURDY"],
         "coverage" : 85,
         "material_thickness" : 5
     },
@@ -3889,7 +3901,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 2,
         "bashing" : 6,
-        "flags" : ["VARSIZE", "STURDY", "BELTED"],
+        "flags" : ["VARSIZE", "STURDY"],
         "coverage" : 85,
         "material_thickness" : 5
     },
@@ -3915,7 +3927,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 2,
         "bashing" : 6,
-        "flags" : ["VARSIZE", "STURDY", "BELTED"],
+        "flags" : ["VARSIZE", "STURDY"],
         "coverage" : 85,
         "material_thickness" : 5
     },
@@ -3941,7 +3953,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 6,
         "bashing" : 6,
-        "flags" : ["VARSIZE", "STURDY", "BELTED"],
+        "flags" : ["VARSIZE", "STURDY"],
         "coverage" : 85,
         "material_thickness" : 4
     },
@@ -4111,7 +4123,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 4,
         "bashing" : 2,
-        "flags" : ["FLOATATION","WATER_FRIENDLY","BELTED"],
+        "flags" : ["FLOATATION","WATER_FRIENDLY"],
         "coverage" : 40,
         "material_thickness" : 4
     },
@@ -4397,7 +4409,7 @@
         "storage" : 14,
         "symbol" : "[",
         "description" : "A light vest covered in pockets and straps for storage.",
-        "flags" : ["BELTED"],
+        "flags" : [],
         "price" : 3900,
         "material" : ["cotton", "null"],
         "volume" : 4,
@@ -4478,7 +4490,7 @@
         "environmental_protection" : 0,
         "encumbrance" : 0,
         "bashing" : -3,
-        "flags" : ["VARSIZE", "WATER_FRIENDLY", "BELTED"],
+        "flags" : ["VARSIZE", "WATER_FRIENDLY"],
         "coverage" : 20,
         "material_thickness" : 2
     },
@@ -6483,7 +6495,10 @@
         "color" : "green",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 40,
+        "storage" : 10,
+        "container_data": {
+            "contains": 40
+        },
         "symbol" : "[",
         "description" : "A small backpack, good storage for a little encumbrance.",
         "price" : 3900,
@@ -6496,7 +6511,7 @@
         "encumbrance" : 1,
         "bashing" : -4,
         "coverage" : 30,
-        "flags" : ["BELTED"],
+        "flags" : ["BACK", "BACKPACK"],
         "material_thickness" : 2
     },
     {
@@ -6507,7 +6522,10 @@
         "color" : "brown",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 40,
+        "storage" : 10,
+        "container_data": {
+            "contains": 40
+        },
         "symbol" : "[",
         "description" : "A small leather backpack, good storage for a little encumbrance.",
         "price" : 11900,
@@ -6520,7 +6538,7 @@
         "encumbrance" : 1,
         "bashing" : -4,
         "coverage" : 30,
-        "flags" : ["BELTED"],
+        "flags" : ["BACK", "BACKPACK"],
         "material_thickness" : 3
     },
     {
@@ -6531,7 +6549,10 @@
         "color" : "yellow",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 38,
+        "storage" : 10,
+        "container_data": {
+            "contains": 38
+        },
         "symbol" : "[",
         "description" : "A lightweight mesh backpack, commonly used by swimmers and divers.",
         "price" : 10900,
@@ -6544,7 +6565,7 @@
         "encumbrance" : 1,
         "bashing" : -4,
         "coverage" : 40,
-        "flags" : ["WATER_FRIENDLY", "BELTED"],
+        "flags" : ["WATER_FRIENDLY", "BACK", "BACKPACK"],
         "material_thickness" : 1
     },
     {
@@ -6555,7 +6576,10 @@
         "color" : "green",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 48,
+        "storage" : 10,
+        "container_data": {
+            "contains": 48
+        },
         "symbol" : "[",
         "description" : "The Modular Lightweight Load-carrying Equipment is an advanced military backpack.  Covered with pockets and straps, it strikes a fine balance between storage space and encumbrance.",
         "price" : 6700,
@@ -6568,7 +6592,7 @@
         "encumbrance" : 1,
         "bashing" : -4,
         "coverage" : 35,
-        "flags" : ["WATERPROOF", "BELTED"],
+        "flags" : ["WATERPROOF", "BACK", "BACKPACK"],
         "material_thickness" : 2
     },
     {
@@ -6579,7 +6603,10 @@
         "color" : "green",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 80,
+        "storage" : 10,
+        "container_data": {
+            "contains": 80
+        },
         "symbol" : "[",
         "description" : "A huge military rucksack, provides a lot of storage.",
         "price" : 9200,
@@ -6592,7 +6619,7 @@
         "encumbrance" : 2,
         "bashing" : -4,
         "coverage" : 40,
-        "flags" : ["BELTED"],
+        "flags" : ["BACK", "BACKPACK"],
         "material_thickness" : 2
     },
     {
@@ -6603,7 +6630,10 @@
         "color" : "green",
         "covers" : ["TORSO"],
         "to_hit" : 0,
-        "storage" : 120,
+        "storage" : 10,
+        "container_data": {
+            "contains": 120
+        },
         "symbol" : "[",
         "description" : "A huge duffel bag, provides plenty of storage but severely encumbering.",
         "price" : 12000,
@@ -6616,7 +6646,7 @@
         "encumbrance" : 3,
         "bashing" : -4,
         "coverage" : 50,
-        "flags" : ["BELTED"],
+        "flags" : ["BACK", "BACKPACK"],
         "material_thickness" : 2
     },
     {
@@ -6673,7 +6703,10 @@
         "color" : "dark_gray",
         "covers" : ["TORSO"],
         "to_hit" : 2,
-        "storage" : 20,
+        "storage" : 5,
+        "container_data": {
+            "contains": 20
+        },
         "symbol" : "[",
         "description" : "A bit cumbersome to wear, but provides some storage.",
         "price" : 7500,
@@ -6683,11 +6716,11 @@
         "warmth" : 0,
         "phase" : "solid",
         "environmental_protection" : 0,
-        "encumbrance" : 1,
+        "encumbrance" : 2,
         "bashing" : 2,
         "coverage" : 10,
         "material_thickness" : 2,
-        "flags" : ["FANCY", "BELTED"]
+        "flags" : ["FANCY", "OVER_SHOULDER"]
     },
     {
         "type" : "ARMOR",
@@ -6697,7 +6730,10 @@
         "color" : "green",
         "covers" : ["TORSO"],
         "to_hit" : 1,
-        "storage" : 20,
+        "storage" : 5,
+        "container_data": {
+            "contains": 20
+        },
         "symbol" : "[",
         "description" : "Light and easy to wear, but doesn't offer much storage.",
         "price" : 7900,
@@ -6708,10 +6744,10 @@
         "warmth" : 0,
         "phase" : "solid",
         "environmental_protection" : 0,
-        "encumbrance" : 0,
+        "encumbrance" : 1,
         "bashing" : 1,
         "coverage" : 30,
-        "flags" : ["BELTED"],
+        "flags" : ["OVER_SHOULDER"],
         "material_thickness" : 1
     },
     {
@@ -6722,7 +6758,10 @@
         "color" : "green",
         "covers" : ["TORSO"],
         "to_hit" : 1,
-        "storage" : 18,
+        "storage" : 10,
+        "container_data": {
+            "contains": 18
+        },
         "symbol" : "[",
         "description" : "The obvious choice for outdoor athletes, this ergonomic backpack is light and easy to wear, ensuring comfort when carrying heavy and bulky items.",
         "price" : 24000,
@@ -6735,7 +6774,7 @@
         "encumbrance" : 0,
         "bashing" : 1,
         "coverage" : 20,
-        "flags" : ["WATERPROOF", "BELTED"],
+        "flags" : ["WATERPROOF", "BACK", "BACKPACK"],
         "material_thickness" : 1
     },
     {
@@ -6744,7 +6783,7 @@
         "name" : "fanny pack",
         "volume" : 1,
         "material_thickness" : 1,
-        "storage" : 6,
+        "storage" : 3,
         "covers" : ["TORSO"],
         "description" : "Provides a bit of extra storage, with minimal encumbrance.",
         "weight" : 272,
@@ -6963,7 +7002,7 @@
         "encumbrance" : 0,
         "coverage" : 5,
         "material_thickness" : 1,
-        "flags" : ["QUIVER_20", "BELTED", "VARSIZE", "OVERSIZE"],
+        "flags" : ["QUIVER_20", "BACK", "VARSIZE", "OVERSIZE"],
         "use_action" : "QUIVER"
     },
     {
@@ -6988,7 +7027,7 @@
         "encumbrance" : 0,
         "coverage" : 15,
         "material_thickness" : 1,
-        "flags" : ["QUIVER_60", "BELTED", "VARSIZE", "OVERSIZE"],
+        "flags" : ["QUIVER_60", "BACK", "VARSIZE", "OVERSIZE"],
         "use_action" : "QUIVER"
     },
     {
@@ -6997,11 +7036,11 @@
         "name" : "scabbard",
         "weight" : 1360,
         "color" : "brown",
-        "covers" : ["TORSO"],
+        "covers" : ["LEGS"],
         "to_hit" : 0,
         "storage" : 0,
         "symbol" : "[",
-        "description" : "A large, adjustable sheath for holding swords and other large blades.  Activate to sheathe/draw a weapon.",
+        "description" : "An adjustable sheath for holding swords and other blades.  Activate to sheathe/draw a weapon.",
         "price" : 6000,
         "material" : ["leather", "wood"],
         "volume" : 7,
@@ -7011,9 +7050,34 @@
         "phase" : "solid",
         "environmental_protection" : 0,
         "encumbrance" : 0,
-        "coverage" : 15,
+        "coverage" : 10,
         "material_thickness" : 1,
         "flags" : ["VARSIZE", "WAIST", "OVERSIZE"],
+        "use_action": "SHEATH_SWORD"
+    },
+    {
+        "type" : "ARMOR",
+        "id" : "large_scabbard",
+        "name" : "large scabbard",
+        "weight" : 2360,
+        "color" : "brown",
+        "covers" : ["TORSO"],
+        "to_hit" : 0,
+        "storage" : 0,
+        "symbol" : "[",
+        "description" : "A large, adjustable sheath for holding two-handed swords and other large blades.  Activate to sheathe/draw a weapon.",
+        "price" : 10000,
+        "material" : ["leather", "wood"],
+        "volume" : 12,
+        "cutting" : -4,
+        "bashing" : 4,
+        "warmth" : 0,
+        "phase" : "solid",
+        "environmental_protection" : 0,
+        "encumbrance" : 0,
+        "coverage" : 15,
+        "material_thickness" : 1,
+        "flags" : ["VARSIZE", "BACK", "OVERSIZE"],
         "use_action": "SHEATH_SWORD"
     },
     {
@@ -7025,7 +7089,10 @@
         "color" : "light_gray",
         "covers" : ["TORSO"],
         "to_hit" : 1,
-        "storage" : 9,
+        "storage" : 0,
+        "container_data": {
+            "contains": 9
+        },
         "symbol" : "[",
         "description" : "A makeshift bag, cobbled together from rags.  Really gets in the way, but provides a decent amount of storage.",
         "price" : 1000,
@@ -7038,7 +7105,7 @@
         "encumbrance" : 1,
         "bashing" : 1,
         "coverage" : 15,
-        "flags" : ["WAIST", "OVERSIZE"],
+        "flags" : ["BACK", "BACKPACK", "OVERSIZE"],
         "material_thickness" : 1
     },
     {
@@ -7050,7 +7117,10 @@
         "color" : "brown",
         "covers" : ["TORSO"],
         "to_hit" : 1,
-        "storage" : 6,
+        "storage" : 0,
+        "container_data": {
+            "contains": 6
+        },
         "symbol" : "[",
         "description" : "A bag stitched together from leather scraps.  Doesn't hold an awful lot but is easy to wear.",
         "price" : 1000,
@@ -7063,7 +7133,7 @@
         "encumbrance" : 0,
         "bashing" : 1,
         "coverage" : 15,
-        "flags" : ["WAIST", "OVERSIZE"],
+        "flags" : ["BACK", "BACKPACK", "OVERSIZE"],
         "material_thickness" : 1
     },
     {
@@ -8099,11 +8169,14 @@
         "environmental_protection" : 0,
         "to_hit" : 1,
         "power_armor" : true,
-        "storage" : 120,
+        "storage" : 10,
+        "container_data": {
+            "contains": 120
+        },
         "encumbrance" : 4,
         "bashing" : 1,
         "symbol" : "[",
-        "flags" : ["WATERPROOF", "STURDY", "BELTED"],
+        "flags" : ["WATERPROOF", "STURDY", "BACK", "BACKPACK"],
         "coverage" : 100,
         "material_thickness" : 10
     },
@@ -9932,7 +10005,7 @@
         "encumbrance" : 4,
         "bashing" : -1,
         "coverage" : 50,
-        "flags" : ["BELTED"],
+        "flags" : ["BACK", "BACKPACK"],
         "material_thickness" : 3
     },
     {

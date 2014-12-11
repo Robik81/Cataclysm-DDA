@@ -2065,6 +2065,50 @@
     },
     {
         "type" : "keybinding",
+        "id": "ITEMS_WORN",
+        "category": "ADVANCED_INVENTORY",
+        "name": "Select worn items",
+        "bindings":[
+            {
+                "input_method":"keyboard",
+                "key":"w"
+            },
+            {
+                "input_method":"keyboard",
+                "key":"W"
+            }
+        ]
+    },
+    {
+        "type" : "keybinding",
+        "id": "ITEMS_BACKPACK",
+        "category": "ADVANCED_INVENTORY",
+        "name": "Select items in backpack",
+        "bindings":[
+            {
+                "input_method":"keyboard",
+                "key":"b"
+            },
+            {
+                "input_method":"keyboard",
+                "key":"B"
+            }
+        ]
+    },
+    {
+        "type" : "keybinding",
+        "id": "PARENT_CONTAINER",
+        "category": "ADVANCED_INVENTORY",
+        "name": "Select parent container",
+        "bindings":[
+            {
+                "input_method":"keyboard",
+                "key":"BACKSPACE"
+            }
+        ]
+    },
+    {
+        "type" : "keybinding",
         "id": "SEW",
         "category": "ITEM_ACTIONS",
         "name": "Sew",

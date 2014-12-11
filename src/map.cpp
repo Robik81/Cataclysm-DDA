@@ -2718,6 +2718,77 @@ map_stack map::i_at( const int x, const int y )
     return map_stack{ &current_submap->itm[lx][ly], point(x, y), this };
 }
 
+item *map::get_item( const int x, const int y, std::vector<item>::const_iterator i )
+{
+    int offset = std::distance( i_at(x, y).begin(), i );
+    return get_item( x, y, offset );
+}
+
+item* map::find_item_by_uid( int x, int y, UID uid )
+{
+    item* found;
+    for( item &it : i_at_mutable( x, y ) ) {
+        found = it.find_item( uid );
+        if ( found != nullptr ) {
+            return found;
+        }
+    }
+
+    return nullptr;
+}
+
+bool map::find_parents_by_uid( int x, int y, UID uid, std::vector<item*> &parents )
+{
+    for( item &it : i_at_mutable( x, y ) ) {
+        if( it.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+itemslice map::i_stacked(std::vector<item>& items)
+{
+    //create a new container for our stacked items
+    itemslice islice;
+
+    //iterate through all items in the vector
+    for( auto &items_it : items ) {
+        if( items_it.count_by_charges() ) {
+            // Those exists as a single item all the item anyway
+            islice.push_back( std::make_pair( &items_it, 1 ) );
+            continue;
+        }
+        bool list_exists = false;
+
+        //iterate through stacked item lists
+        for( auto &elem : islice ) {
+            //check if the ID exists
+            item *first_item = elem.first;
+            if( first_item->type->id == items_it.type->id ) {
+                //we've found the list of items with the same type ID
+
+                if( first_item->stacks_with( items_it ) ) {
+                    //add it to the existing list
+                    elem.second++;
+                    list_exists = true;
+                    break;
+                }
+            }
+        }
+
+        if(!list_exists) {
+            //insert the list into islice
+            islice.push_back( std::make_pair( &items_it, 1 ) );
+        }
+
+    } //end items loop
+
+    return islice;
+}
+
+
 bool map::sees_some_items(int x, int y, const player &u)
 {
     // can only see items if there are any items.

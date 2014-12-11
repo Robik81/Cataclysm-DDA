@@ -10,4 +10,14 @@ int dice(int number, int sides);
 
 int djb2_hash(const unsigned char *input);
 
+enum uid_spec {
+    UID_NONE = 0,
+    UID_SPARE_MAG_RELOAD,
+    UID_MIN = 1000
+};
+
+typedef unsigned long UID;
+
+UID generate_uid();
+
 #endif

@@ -1,6 +1,7 @@
 #include "output.h"
 #include "rng.h"
 #include <stdlib.h>
+#include <random>
 
 long rng(long val1, long val2)
 {
@@ -53,5 +54,13 @@ int djb2_hash(const unsigned char *str)
         c = *str++;
     }
     return hash;
+}
+
+UID generate_uid()
+{
+    static std::default_random_engine generator( time( 0 ) );
+    static std::uniform_int_distribution<UID> distribution( UID_MIN, ULONG_MAX );
+
+    return distribution(generator);
 }
 

@@ -21,7 +21,10 @@ enum aim_location {
     AIM_NORTHEAST,
     AIM_ALL,
     AIM_DRAGED,
-    AIM_CONTAINER
+    AIM_CONTAINER,
+    AIM_WORN,
+    AIM_BACKPACK,
+    AIM_MAX
 };
 
 enum advanced_inv_sortby {
@@ -35,6 +38,8 @@ enum advanced_inv_sortby {
 };
 
 struct advanced_inv_listitem;
+
+struct advanced_inventory_pane;
 
 /**
  * Defines the source of item stacks.
@@ -75,16 +80,19 @@ struct advanced_inv_area {
     }
 
     void init();
-    int free_volume() const;
+    void init( advanced_inventory_pane &pane ); // only for AIM_CONTAINER
+    int free_volume( advanced_inventory_pane &pane );
     int get_item_count() const;
     // Other area is actually the same item source, e.g. dragged vehicle to the south
     // and AIM_SOUTH
     bool is_same( const advanced_inv_area &other ) const;
-    bool canputitems( const advanced_inv_listitem *advitem = nullptr );
-    item* get_container();
-    void set_container( const advanced_inv_listitem *advitem );
-    bool is_container_valid( const item *it ) const;
-    void set_container_position();
+    bool canputitems();
+    bool canputitems( advanced_inventory_pane &pane );
+    item* get_container( advanced_inventory_pane &pane );
+    int get_container_remaing_capacity( advanced_inventory_pane &pane );
+    void find_parents( advanced_inventory_pane &pane, std::vector<item*> &parents );
+    void set_container( advanced_inventory_pane &pane );
+    void set_container_position( advanced_inventory_pane &pane );
 };
 
 // see item_factory.h
@@ -231,6 +239,14 @@ class advanced_inventory_pane
          * Insert additional category headers on the top of each page.
          */
         void paginate( size_t itemsPerPage );
+
+        int container_location;
+        UID container_uid;
+        std::string container_desc;
+        void reset_container();
+        // returns either area, if not AIM_ALL, or uistate.adv_inv_last_popup_dest
+        aim_location destination() const;
+
     private:
         /** Scroll to next non-header entry */
         void skip_category_headers(int offset);
@@ -289,7 +305,7 @@ class advanced_inventory
          * as index.
          */
         std::array<advanced_inventory_pane, 2> panes;
-        std::array<advanced_inv_area, 13> squares;
+        std::array<advanced_inv_area, AIM_MAX> squares;
 
         WINDOW *head;
         WINDOW *left_window;
@@ -340,10 +356,23 @@ class advanced_inventory
          * @param src_container Source container
          * @param dest_container Destination container
          */
-        bool move_content(item &src, item &dest);
+        bool move_content( item &src_container, item &dest_container, long amount_to_move );
+        /**
+         * Move item into destination (source and / or destination pane = AIM_CONTAINER)
+         * Internally calls move_content for moving liquids if necessary
+         * @param spane Source pane
+         * @param dpane Destination pane
+         * @param amount_to_move Amount to move
+         */
+        bool move_item( advanced_inventory_pane &spane, advanced_inventory_pane &dpane, long amount_to_move );
+        /**
+         * Checks if we are moving liquid or not
+         */
+        bool moving_liquid( const advanced_inv_listitem &sitem, advanced_inventory_pane &dpane );
+        bool same_pane( advanced_inventory_pane &spane, advanced_inventory_pane &dpane ) const;
         /**
          * Setup how many items/charges (if counted by charges) should be moved.
-         * @param destarea Where to move to. This must not be AIM_ALL.
+         * @param dpane Where to move to. This must not be AIM_ALL.
          * @param sitem The source item, it must contain a valid reference to an item!
          * @param amount The input value is ignored, contains the amount that should
          * be moved. Only valid if this returns true.
@@ -351,7 +380,7 @@ class advanced_inventory
          * should be moved. A return value of true indicates that amount now contains
          * a valid item count to be moved.
          */
-        bool query_charges(aim_location destarea, const advanced_inv_listitem &sitem, bool askamount, long &amount );
+        bool query_charges(advanced_inventory_pane &dpane, const advanced_inv_listitem &sitem, bool askamount, long &amount );
         /**
          * Remove the item from source area. Must not be used on items with area
          * AIM_ALL or AIM_INVENTORY!

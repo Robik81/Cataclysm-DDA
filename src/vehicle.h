@@ -175,6 +175,9 @@ public:
      * It includes hp, fuel, bigness, ...
      */
     void properties_from_item( const item &used_item );
+
+    item* find_item_by_uid( UID uid );
+    bool find_parents_by_uid( UID uid, std::vector<item*> &parents );
 };
 
 /**

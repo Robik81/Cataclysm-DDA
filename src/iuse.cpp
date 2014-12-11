@@ -108,8 +108,20 @@ bool check_litcig( player &u )
     return false;
 }
 
+enum inscription_type {
+    INSCRIPTION_LABEL,
+    INSCRIPTION_NOTE,
+    INSCRIPTION_CANCEL
+};
+
+enum insciption_method {
+    INSCRIPTION_CARVE,
+    INSCRIPTION_SEW,
+    INSCRIPTION_OTHER
+};
+
 static bool item_inscription(player *p, item *cut, std::string verb, std::string gerund,
-                             bool carveable)
+                             insciption_method method)
 {
     (void)p; //unused
     if (!cut->made_of(SOLID)) {
@@ -118,10 +130,29 @@ static bool item_inscription(player *p, item *cut, std::string verb, std::string
         add_msg(m_info, _("You can't %s an item that's not solid!"), lower_verb.c_str());
         return false;
     }
-    if (carveable && !(cut->made_of("wood") || cut->made_of("plastic") ||
-                       cut->made_of("glass") || cut->made_of("chitin") ||
-                       cut->made_of("iron") || cut->made_of("steel") ||
-                       cut->made_of("silver"))) {
+
+    bool can_inscribe = false;
+    switch ( method ) {
+        case INSCRIPTION_CARVE:
+            if( cut->made_of("wood") || cut->made_of("plastic") ||
+                cut->made_of("glass") || cut->made_of("chitin") ||
+                cut->made_of("iron") || cut->made_of("steel") ||
+                cut->made_of("silver")) {
+                can_inscribe = true;
+            }
+            break;
+        case INSCRIPTION_SEW:
+            if( cut->made_of("cotton") || cut->made_of("leather") ||
+                cut->made_of("fur")) {
+                can_inscribe = true;
+            }
+            break;
+        case INSCRIPTION_OTHER:
+            can_inscribe = true;
+            break;
+    }
+
+    if( !can_inscribe ) {
         std::string lower_verb = verb;
         std::transform(lower_verb.begin(), lower_verb.end(), lower_verb.begin(), ::tolower);
         add_msg(m_info, _("You can't %1$s %2$s because of the material it is made of."),
@@ -129,7 +160,29 @@ static bool item_inscription(player *p, item *cut, std::string verb, std::string
         return false;
     }
 
-    std::map<std::string, std::string>::const_iterator ent = cut->item_vars.find("item_note");
+
+    uimenu menu;
+    menu.text = string_format( _( "%s meaning?" ), verb.c_str() );
+    menu.addentry( INSCRIPTION_LABEL, true, -1, _( "It's a label" ) );
+    menu.addentry( INSCRIPTION_NOTE, true, -1, _( "It's a note" ) );
+    menu.addentry( INSCRIPTION_CANCEL, true, 'q', _( "Cancel" ) );
+    menu.query();
+
+    std::string carving, carving_type;
+    switch ( menu.ret ) {
+        case INSCRIPTION_LABEL:
+            carving = "item_label";
+            carving_type = "item_label_type";
+            break;
+        case INSCRIPTION_NOTE:
+            carving = "item_note";
+            carving_type = "item_note_type";
+            break;
+        case INSCRIPTION_CANCEL:
+            return false;
+    }
+
+    std::map<std::string, std::string>::const_iterator ent = cut->item_vars.find(carving);
 
     bool hasnote = (ent != cut->item_vars.end());
     std::string message = "";
@@ -137,17 +190,16 @@ static bool item_inscription(player *p, item *cut, std::string verb, std::string
                                 string_format(_("%1$s on the %2$s is: "),
                                         gerund.c_str(), cut->type_name().c_str());
     message = string_input_popup(string_format(_("%s what?"), verb.c_str()), 64,
-                                 (hasnote ? cut->item_vars["item_note"] : message),
+                                 (hasnote ? cut->item_vars[carving] : message),
                                  messageprefix, "inscribe_item", 128);
 
     if (!message.empty()) {
         if (hasnote && message == ".") {
-            cut->item_vars.erase("item_note");
-            cut->item_vars.erase("item_note_type");
-            cut->item_vars.erase("item_note_typez");
+            cut->item_vars.erase( carving );
+            cut->item_vars.erase( carving_type );
         } else {
-            cut->item_vars["item_note"] = message;
-            cut->item_vars["item_note_type"] = gerund;
+            cut->item_vars[carving] = message;
+            cut->item_vars[carving_type] = gerund;
         }
     }
     return true;
@@ -155,7 +207,7 @@ static bool item_inscription(player *p, item *cut, std::string verb, std::string
 
 // Returns false if the inscription failed or if the player canceled the action. Otherwise, returns true.
 
-static bool inscribe_item(player *p, std::string verb, std::string gerund, bool carveable)
+static bool inscribe_item(player *p, std::string verb, std::string gerund, insciption_method method)
 {
     //Note: this part still strongly relies on English grammar.
     //Although it can be easily worked around in language like Chinese,
@@ -166,7 +218,7 @@ static bool inscribe_item(player *p, std::string verb, std::string gerund, bool 
         add_msg(m_info, _("You do not have that item!"));
         return false;
     }
-    return item_inscription(p, cut, verb, gerund, carveable);
+    return item_inscription(p, cut, verb, gerund, method);
 }
 
 // For an explosion (which releases some kind of gas), this function
@@ -3014,8 +3066,12 @@ int iuse::sew(player *p, item *it, bool, point)
             p->add_msg_if_player(m_neutral, _("You practice your sewing."));
         }
     } else {
-        p->add_msg_if_player(m_info, _("Your %s is already enhanced."), fix->tname().c_str());
-        return 0;
+        //p->add_msg_if_player(m_info, _("Your %s is already enhanced."), fix->tname().c_str());
+        bool canceled_inscription = !item_inscription(p, fix, _("Sew"), _("Sewn"), INSCRIPTION_SEW);
+        if (canceled_inscription) {
+            return 0;
+        }
+        return it->type->charges_to_use();
     }
 
     return thread_used;
@@ -6722,7 +6778,7 @@ static int carve_writing(player *p, item *it)
 
     // Adding this check in as a formality, but I'm pretty sure whatever
     // in reality items used to carve will not burn charges for writing.
-    if (item_inscription(p, cut, _("Carve"), _("Carved"), true)) {
+    if (item_inscription(p, cut, _("Carve"), _("Carved"), INSCRIPTION_CARVE)) {
         return it->type->charges_to_use();
     } else {
         return 0;
@@ -7625,7 +7681,7 @@ int iuse::spray_can(player *p, item *it, bool, point)
 
         if (ret == 2) {
             // inscribe_item returns false if the action fails or is canceled somehow.
-            bool canceled_inscription = !inscribe_item(p, _("Write"), _("Written"), false);
+            bool canceled_inscription = !inscribe_item(p, _("Write"), _("Written"), INSCRIPTION_OTHER);
             if (canceled_inscription) {
                 return 0;
             }
@@ -7897,6 +7953,12 @@ int iuse::sheath_knife(player *p, item *it, bool, point)
             return 0;
         }
 
+        // only allow swords smaller than a certain size
+        if (put->volume() > maxvol) {
+            p->add_msg_if_player(m_info, _("That scabbard is too small to hold your %s!"), put->tname().c_str());
+            return 0;
+        }
+
         int lvl = p->skillLevel("cutting");
         std::string message;
         if (lvl < 2) {
@@ -7940,6 +8002,13 @@ int iuse::sheath_knife(player *p, item *it, bool, point)
 
 int iuse::sheath_sword(player *p, item *it, bool, point)
 {
+    int maxvol = 8; // default max volume of sheathed weapon
+    int moves = 0; // default move cost of sheathing / unsheathing
+    if (it->type->id == "large_scabbard") {
+        maxvol = 20; // large scabbard can hold weapon up to 20 volume
+        moves = 100; // large_scabbard is worn on the back, you must take it off first to draw from it
+    }
+
     // if sheath is empty, pull up menu asking what to sheathe
     if (it->contents.empty()) {
         // only show SHEATH_SWORD items
@@ -7959,6 +8028,12 @@ int iuse::sheath_sword(player *p, item *it, bool, point)
             return 0;
         }
 
+        // only allow swords smaller than a certain size
+        if (put->volume() > maxvol) {
+            p->add_msg_if_player(m_info, _("That scabbard is too small to hold your %s!"), put->tname().c_str());
+            return 0;
+        }
+
         int lvl = p->skillLevel("cutting");
         std::string message;
         if (lvl < 2) {
@@ -7969,6 +8044,7 @@ int iuse::sheath_sword(player *p, item *it, bool, point)
             message = _("You sheathe your %s.");
         }
 
+        p->moves -= moves;
         p->add_msg_if_player(message.c_str(), put->tname().c_str());
         p->store(it, put, "cutting", 14);
 
@@ -7976,6 +8052,7 @@ int iuse::sheath_sword(player *p, item *it, bool, point)
     } else {
         if (!p->is_armed() || p->wield(NULL)) {
             int lvl = p->skillLevel("cutting");
+            p->moves -= moves;
             p->wield_contents(it, true, "cutting", 13);
 
             // in order to perform iaijutsu, have to pass a roll based on level
