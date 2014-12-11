@@ -231,8 +231,8 @@ void npc::execute_action(npc_action action, int target)
 
     case npc_reload: {
         moves -= weapon.reload_time(*this);
-        int ammo_index = weapon.pick_reload_ammo(*this, false);
-        if (!weapon.reload(*this, ammo_index)) {
+        position_uid ammo_pu = weapon.pick_reload_ammo(*this, false);
+        if (!weapon.reload(*this, ammo_pu)) {
             debugmsg("NPC reload failed.");
         }
         recoil = MIN_RECOIL;

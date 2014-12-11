@@ -617,7 +617,7 @@ void game::start_game(std::string worldname)
 
     const start_location &start_loc = *start_location::find( u.start_location );
     start_loc.setup( cur_om, levx, levy, levz );
-    
+
     // Start the overmap with out immediate neighborhood visible
     overmap_buffer.reveal(point(om_global_location().x, om_global_location().y), OPTIONS["DISTANCE_INITIAL_VISIBILITY"], 0);
     // Init the starting map at this location.
@@ -2008,12 +2008,11 @@ void game::activity_on_finish_reload()
 {
     item *reloadable = NULL;
     {
-        int reloadable_pos;
-        std::stringstream ss(u.activity.name);
-        ss >> reloadable_pos;
+        int reloadable_pos = u.activity.index;
         reloadable = &u.i_at(reloadable_pos);
     }
-    if (reloadable->reload(u, u.activity.position)) {
+    position_uid pu( u.activity.position, u.activity.values.front() );
+    if (reloadable->reload(u, pu)) {
         if (reloadable->is_gun() && reloadable->has_flag("RELOAD_ONE")) {
             if (reloadable->ammo_type() == "bolt") {
                 add_msg(_("You insert a bolt into your %s."),
@@ -2714,9 +2713,15 @@ int game::inventory_item_menu(int pos, int iStartX, int iWidth, int position)
         WINDOW *w = newwin(TERMY - VIEW_OFFSET_Y * 2, iWidth, VIEW_OFFSET_Y, iStartX + VIEW_OFFSET_X);
         WINDOW_PTR wptr( w );
 
+        int print_start = 3;
         wmove(w, 1, 2);
         wprintz(w, c_white, "%s", item_name.c_str());
-        max_line = fold_and_print_from(w, 3, 2, iWidth - 4, offset_line, c_white, str);
+        if( oThisItem.has_label() ) {
+            wmove(w, 2, 2);
+            wprintz( w, c_white, "%s", oThisItem.type->nname( 1 ).c_str() );
+            print_start++;
+        }
+        max_line = fold_and_print_from(w, print_start, 2, iWidth - 4, offset_line, c_white, str);
         if (max_line > TERMY - VIEW_OFFSET_Y * 2 - 5) {
             wmove(w, 1, iWidth - 3);
             if (offset_line == 0) {
@@ -11238,7 +11243,6 @@ void game::plfire(bool burst, int default_target_x, int default_target_y)
         }
     }
 
-    int reload_pos = INT_MIN;
     if (!u.weapon.is_gun()) {
         return;
     }
@@ -11280,62 +11284,65 @@ void game::plfire(bool burst, int default_target_x, int default_target_y)
     }
 
     if (u.weapon.has_flag("RELOAD_AND_SHOOT") && u.weapon.charges == 0) {
-            // find worn quivers
-            std::vector<item *> quivers;
-            for( auto &worn : u.worn ) {
+        position_uid reload_pu( UID_NONE );
 
-                if (worn.type->can_use("QUIVER") && !worn.contents.empty()
-                    && worn.contents[0].is_ammo() && worn.contents[0].charges > 0
-                    && worn.contents[0].ammo_type() == u.weapon.ammo_type() ) {
-                    quivers.push_back(&worn);
-                }
+        // find worn quivers
+        std::vector<item *> quivers;
+        for ( auto &worn : u.worn ) {
+            if (worn.type->can_use("QUIVER") && !worn.contents.empty()
+                && worn.contents[0].is_ammo() && worn.contents[0].charges > 0
+                && worn.contents[0].ammo_type() == u.weapon.ammo_type() ) {
+                quivers.push_back(&worn);
             }
-            // ask which quiver to draw from
-            if (!quivers.empty()) {
-                int choice = -1;
-                //only one quiver found, choose it
-                if (quivers.size() == 1) {
-                    choice = 0;
-                } else {
-                    std::vector<std::string> choices;
-                    for( auto i : quivers ) {
-
-                        std::ostringstream ss;
-                        ss << string_format(_("%s from %s (%d)"),
-                                            i->contents[0].tname().c_str(),
-                                            i->type_name(1).c_str(),
-                                            i->contents[0].charges);
-                        choices.push_back(ss.str());
-                    }
-                    choice = (uimenu(false, _("Draw from which quiver?"), choices)) - 1;
-                }
-
-                // draw arrow from quiver
-                if (choice > -1) {
-                    item *worn = quivers[choice];
-                    item &arrows = worn->contents[0];
-                    // chance to fail pulling an arrow at lower levels
-                    int archery = u.skillLevel("archery");
-                    if (archery <= 2 && one_in(10)) {
-                        u.moves -= 30;
-                        u.add_msg_if_player(_("You try to pull a %s from your %s, but fail!"),
-                                            arrows.tname().c_str(), worn->type_name(1).c_str());
-                        return;
-                    }
-                    u.add_msg_if_player(_("You pull a %s from your %s and nock it."),
-                                        arrows.tname().c_str(), worn->type_name(1).c_str());
-                    reload_pos = u.get_item_position(worn);
-                }
-            }
-        if (reload_pos == INT_MIN) {
-            reload_pos = u.weapon.pick_reload_ammo(u, true);
         }
-        if (reload_pos == INT_MIN) {
+        // ask which quiver to draw from
+        if (!quivers.empty()) {
+            int choice = -1;
+            //only one quiver found, choose it
+            if (quivers.size() == 1) {
+                choice = 0;
+            } else {
+                std::vector<std::string> choices;
+                for ( auto i : quivers ) {
+                    std::ostringstream ss;
+                    ss << string_format(_("%s from %s (%d)"),
+                                        i->contents[0].tname().c_str(),
+                                        i->type->nname(1).c_str(),
+                                        i->contents[0].charges);
+                    choices.push_back(ss.str());
+                }
+                choice = (uimenu(false, _("Draw from which quiver?"), choices)) - 1;
+            }
+
+            // draw arrow from quiver
+            if (choice > -1) {
+                item *worn = quivers[choice];
+                item &arrows = worn->contents[0];
+                // chance to fail pulling an arrow at lower levels
+                int archery = u.skillLevel("archery");
+                if (archery <= 2 && one_in(10)) {
+                    u.moves -= 30;
+                    u.add_msg_if_player(_("You try to pull a %s from your %s, but fail!"),
+                                        arrows.tname().c_str(), worn->type_name(1).c_str());
+                    return;
+                }
+                u.add_msg_if_player(_("You pull a %s from your %s and nock it."),
+                                    arrows.tname().c_str(), worn->type->nname(1).c_str());
+
+                reload_pu.position = u.get_item_position( worn );
+                reload_pu.uid = worn->get_uid();
+            }
+        }
+
+        if( reload_pu.uid == UID_NONE ) {
+            reload_pu = u.weapon.pick_reload_ammo(u, true);
+        }
+        if( reload_pu.uid == UID_NONE ) {
             add_msg(m_info, _("Out of ammo!"));
             return;
         }
 
-        u.weapon.reload(u, reload_pos);
+        u.weapon.reload( u, reload_pu );
         u.moves -= u.weapon.reload_time(u);
         refresh_all();
     }
@@ -12083,17 +12090,16 @@ void game::reload(int pos)
         }
 
         // pick ammo
-        int am_pos = it->pick_reload_ammo(u, true);
-        if (am_pos == INT_MIN) {
+        position_uid pu = it->pick_reload_ammo( u, true );
+        if (pu.uid == UID_NONE) {
             add_msg(m_info, _("Out of ammo!"));
             refresh_all();
             return;
         }
 
         // and finally reload.
-        std::stringstream ss;
-        ss << pos;
-        u.assign_activity(ACT_RELOAD, it->reload_time(u), -1, am_pos, ss.str());
+        u.assign_activity( ACT_RELOAD, it->reload_time( u ), pos, pu.position );
+        u.activity.values.push_back( pu.uid );
 
     } else if (it->is_tool()) { // tools are simpler
         it_tool *tool = dynamic_cast<it_tool *>(it->type);
@@ -12108,19 +12114,17 @@ void game::reload(int pos)
         }
 
         // pick ammo
-        int am_pos = it->pick_reload_ammo(u, true);
+        position_uid pu = it->pick_reload_ammo(u, true);
 
-        if (am_pos == INT_MIN) {
+        if (pu.uid == UID_NONE) {
             // no ammo, fail reload
             add_msg(m_info, _("Out of %s!"), ammo_name(tool->ammo).c_str());
             return;
         }
 
         // do the actual reloading
-        std::stringstream ss;
-        ss << pos;
-        u.assign_activity(ACT_RELOAD, it->reload_time(u), -1, am_pos, ss.str());
-
+        u.assign_activity( ACT_RELOAD, it->reload_time( u ), pos, pu.position );
+        u.activity.values.push_back( pu.uid );
     } else { // what else is there?
         add_msg(m_info, _("You can't reload a %s!"), it->tname().c_str());
     }

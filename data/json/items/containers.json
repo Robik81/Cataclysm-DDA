@@ -13,7 +13,7 @@
         "bashing": -8,
         "cutting": 0,
         "to_hit": -1,
-        "contains": 24,
+        "contains": 2,
         "material": "plastic"
     },
     {
@@ -34,7 +34,8 @@
         "contains": 2,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 8
     },
     {
         "id": "cup_plastic",
@@ -73,7 +74,8 @@
         "contains": 3,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 8
     },
     {
         "id": "can_drink",
@@ -94,6 +96,7 @@
         "rigid": true,
         "watertight": true,
         "preserves": true,
+        "max_size": 1,
         "qualities": [["CONTAIN", 1], ["BOIL", 2]]
     },
     {
@@ -133,6 +136,7 @@
         "rigid": true,
         "watertight": true,
         "preserves": true,
+        "max_size": 1,
         "qualities": [["CONTAIN", 1], ["BOIL", 2]]
     },
     {
@@ -182,7 +186,8 @@
         "rigid": true,
         "watertight": true,
         "seals": true,
-        "flags": ["WAIST"]
+        "flags": ["WAIST"],
+        "max_size": 8
     },
     {
         "id": "2lcanteen",
@@ -212,7 +217,8 @@
         "rigid": true,
         "watertight": true,
         "seals": true,
-        "flags": ["WAIST"]
+        "flags": ["WAIST"],
+        "max_size": 8
     },
     {
         "id": "jerrycan",
@@ -232,7 +238,8 @@
         "contains": 40,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 125
     },
     {
         "id": "jug_plastic",
@@ -252,7 +259,8 @@
         "contains": 15,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 27
     },
     {
         "id": "flask_glass",
@@ -272,7 +280,8 @@
         "contains": 1,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 8
     },
     {
         "id": "waterskin",
@@ -301,7 +310,8 @@
         },
         "watertight": true,
         "seals": true,
-        "flags": ["WAIST"]
+        "flags": ["WAIST"],
+        "max_size": 8
     },
     {
         "id": "waterskin2",
@@ -330,7 +340,8 @@
         },
         "watertight": true,
         "seals": true,
-        "flags": ["WAIST"]
+        "flags": ["WAIST"],
+        "max_size": 27
     },
     {
         "id": "waterskin3",
@@ -359,7 +370,8 @@
         },
         "watertight": true,
         "seals": true,
-        "flags": ["BELTED"]
+        "flags": ["BELTED"],
+        "max_size": 27
     },
     {
         "id": "jerrycan_big",
@@ -379,7 +391,8 @@
         "contains": 100,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 125
     },
     {
         "id" : "metal_tank",
@@ -396,6 +409,7 @@
         "cutting" : 0,
         "to_hit" : -4,
         "contains" : 225,
+        "max_size": 250,
         "material" : ["steel", "null"],
         "rigid": true,
         "watertight": true,
@@ -416,6 +430,7 @@
         "cutting" : 0,
         "to_hit" : -3,
         "contains" : 45,
+        "max_size": 125,
         "material" : ["aluminum", "null"],
         "rigid": true,
         "watertight": true,
@@ -436,6 +451,7 @@
         "cutting" : 0,
         "to_hit" : -2,
         "contains" : 5,
+        "max_size": 27,
         "material" : ["aluminum", "null"],
         "rigid": true,
         "watertight": true,
@@ -459,7 +475,8 @@
         "contains": 200,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 125
     },
     {
         "id": "jar_glass",
@@ -521,7 +538,8 @@
         "contains": 1,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 1
     },
     {
         "id":"bowl_plastic",
@@ -557,7 +575,7 @@
         "bashing": -8,
         "cutting": 0,
         "to_hit": -2,
-        "contains": 10,
+        "contains": 2,
         "material": "paper"
     },
     {
@@ -618,7 +636,8 @@
         "contains": 400,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 250
     },
     {
         "id": "bag_canvas",
@@ -643,9 +662,27 @@
         "type": "CONTAINER",
         "symbol": ")",
         "color": "brown",
-        "name": "canvas bag",
+        "name": "small canvas bag",
         "category": "other",
         "description": "Small bag made of canvas. Looks fine to store dried herbs in.",
+        "price": 0,
+        "weight": 5,
+        "volume": 0,
+        "bashing": -5,
+        "cutting": 0,
+        "to_hit": -5,
+        "material": "cotton",
+        "contains": 4,
+        "seals": true
+    },
+    {
+        "id": "bag_canvas_medium",
+        "type": "CONTAINER",
+        "symbol": ")",
+        "color": "brown",
+        "name": "canvas bag",
+        "category": "other",
+        "description": "Bag made of canvas. Looks fine to store your food in.",
         "price": 0,
         "weight": 5,
         "volume": 1,
@@ -653,8 +690,8 @@
         "cutting": 0,
         "to_hit": -5,
         "material": "cotton",
-        "contains": 4,
-        "seals": true
+        "contains": 15,
+        "flags": [ "SEALS" ]
     },
     {
         "id": "bottle_plastic_small",
@@ -674,7 +711,8 @@
         "contains": 1,
         "rigid": true,
         "watertight": true,
-        "seals": true
+        "seals": true,
+        "max_size": 8
     },
     {
         "id": "jug_clay",

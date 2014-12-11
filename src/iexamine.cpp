@@ -278,7 +278,7 @@ void iexamine::atm(player *p, map *m, int examx, int examy)
 
 void iexamine::vending(player *p, map *m, int examx, int examy)
 {
-    auto &vend_items = m->i_at(examx, examy);
+    auto &vend_items = m->i_at_mutable(examx, examy);
     int num_items = vend_items.size();
 
     if (num_items == 0) {

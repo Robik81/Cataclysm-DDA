@@ -1307,7 +1307,7 @@ void player::update_bodytemp()
             int cold_int = get_effect_int("cold", (body_part)i);
             int hot_int = get_effect_int("hot", (body_part)i);
             int intensity_mult = hot_int - cold_int;
-            
+
             switch (i) {
             case bp_head:
             case bp_torso:
@@ -1365,7 +1365,7 @@ void player::update_bodytemp()
                                warmth((body_part)i) * 0.2 - 20 * wetness_percentage / 100;
             // Windchill reduced by your armor
             int FBwindPower = total_windpower * (1 - get_wind_resistance(body_part(i)) / 100.0);
-            
+
             int intense = get_effect_int("frostbite", (body_part)i);
 
             // This has been broken down into 8 zones
@@ -1890,7 +1890,7 @@ void player::memorial( std::ofstream &memorial_file, std::string epitaph )
     int city_index = g->cur_om->closest_city(cur_loc);
     std::string kill_place;
     if(city_index < 0) {
-        //~ First parameter is a pronoun (“He”/“She”), second parameter is a terrain name.
+        //~ First parameter is a pronoun ("He"/"She"), second parameter is a terrain name.
         kill_place = string_format(_("%s was killed in a %s in the middle of nowhere."),
                      pronoun.c_str(), tername.c_str());
     } else {
@@ -1898,16 +1898,16 @@ void player::memorial( std::ofstream &memorial_file, std::string epitaph )
         //Give slightly different messages based on how far we are from the middle
         int distance_from_city = abs(g->cur_om->dist_from_city(cur_loc));
         if(distance_from_city > nearest_city.s + 4) {
-            //~ First parameter is a pronoun (“He”/“She”), second parameter is a terrain name.
+            //~ First parameter is a pronoun ("He"/"She"), second parameter is a terrain name.
             kill_place = string_format(_("%s was killed in a %s in the wilderness."),
                          pronoun.c_str(), tername.c_str());
 
         } else if(distance_from_city >= nearest_city.s) {
-            //~ First parameter is a pronoun (“He”/“She”), second parameter is a terrain name, third parameter is a city name.
+            //~ First parameter is a pronoun ("He"/"She"), second parameter is a terrain name, third parameter is a city name.
             kill_place = string_format(_("%s was killed in a %s on the outskirts of %s."),
                          pronoun.c_str(), tername.c_str(), nearest_city.name.c_str());
         } else {
-            //~ First parameter is a pronoun (“He”/“She”), second parameter is a terrain name, third parameter is a city name.
+            //~ First parameter is a pronoun ("He"/"She"), second parameter is a terrain name, third parameter is a city name.
             kill_place = string_format(_("%s was killed in a %s in %s."),
                          pronoun.c_str(), tername.c_str(), nearest_city.name.c_str());
         }
@@ -1919,7 +1919,7 @@ void player::memorial( std::ofstream &memorial_file, std::string epitaph )
     memorial_file << "\n";
     memorial_file << string_format(_("In memory of: %s"), name.c_str()) << "\n";
     if(epitaph.length() > 0) { //Don't record empty epitaphs
-        //~ The “%s” will be replaced by an epitaph as displyed in the memorial files. Replace the quotation marks as appropriate for your language.
+        //~ The "%s" will be replaced by an epitaph as displyed in the memorial files. Replace the quotation marks as appropriate for your language.
         memorial_file << string_format(pgettext("epitaph","\"%s\""), epitaph.c_str()) << "\n\n";
     }
     //~ First parameter: Pronoun, second parameter: a profession name (with article)
@@ -4929,7 +4929,7 @@ dealt_damage_instance player::deal_damage(Creature* source, body_part bp, const 
                 }
             }
         }
-        
+
         if (dealt_dams.total_damage() > 0 && source->has_flag(MF_VENOM)) {
             add_msg_if_player(m_bad, _("You're poisoned!"));
             add_effect("poison", 30);
@@ -5793,7 +5793,7 @@ void player::process_effects() {
     if (!(in_sleep_state()) && has_effect("alarm_clock")) {
         remove_effect("alarm_clock");
     }
-    
+
     //Human only effects
     for( auto &elem : effects ) {
         for( auto &_effect_it : elem.second ) {
@@ -5802,10 +5802,10 @@ void player::process_effects() {
             double mod = 1;
             body_part bp = it.get_bp();
             int val = 0;
-            
+
             // Still hardcoded stuff, do this first since some modify their other traits
             hardcoded_effects(it);
-            
+
             // Handle miss messages
             auto msgs = it.get_miss_msgs();
             if (!msgs.empty()) {
@@ -5813,7 +5813,7 @@ void player::process_effects() {
                     add_miss_reason(_(i.first.c_str()), i.second);
                 }
             }
-            
+
             // Handle health mod
             val = it.get_mod("H_MOD", reduced);
             if (val != 0) {
@@ -5823,7 +5823,7 @@ void player::process_effects() {
                                 it.get_max_val("H_MOD", reduced), it.get_min_val("H_MOD", reduced)));
                 }
             }
-            
+
             // Handle health
             val = it.get_mod("HEALTH", reduced);
             if (val != 0) {
@@ -5833,7 +5833,7 @@ void player::process_effects() {
                                 it.get_max_val("HEALTH", reduced), it.get_min_val("HEALTH", reduced)));
                 }
             }
-            
+
             // Handle stim
             val = it.get_mod("STIM", reduced);
             if (val != 0) {
@@ -5843,7 +5843,7 @@ void player::process_effects() {
                                                 it.get_min_val("STIM", reduced));
                 }
             }
-            
+
             // Handle hunger
             val = it.get_mod("HUNGER", reduced);
             if (val != 0) {
@@ -5853,7 +5853,7 @@ void player::process_effects() {
                                                 it.get_min_val("HUNGER", reduced));
                 }
             }
-            
+
             // Handle thirst
             val = it.get_mod("THIRST", reduced);
             if (val != 0) {
@@ -5863,7 +5863,7 @@ void player::process_effects() {
                                                 it.get_min_val("THIRST", reduced));
                 }
             }
-            
+
             // Handle fatigue
             val = it.get_mod("FATIGUE", reduced);
             if (val != 0) {
@@ -5873,7 +5873,7 @@ void player::process_effects() {
                                                 it.get_min_val("FATIGUE", reduced));
                 }
             }
-            
+
             // Handle Radiation
             val = it.get_mod("RAD", reduced);
             if (val != 0) {
@@ -5886,14 +5886,14 @@ void player::process_effects() {
                     }
                 }
             }
-            
+
             // Handle stat changes
             mod_str_bonus(it.get_mod("STR", reduced));
             mod_dex_bonus(it.get_mod("DEX", reduced));
             mod_per_bonus(it.get_mod("PER", reduced));
             mod_int_bonus(it.get_mod("INT", reduced));
             mod_speed_bonus(it.get_mod("SPEED", reduced));
-            
+
             // Handle Pain
             val = it.get_mod("PAIN", reduced);
             if (val != 0) {
@@ -5970,13 +5970,13 @@ void player::process_effects() {
                     pkill += bound_mod_to_vals(pkill, val, it.get_max_val("PKILL", reduced), 0);
                 }
             }
-            
+
             // Handle coughing
             mod = 1;
             if (it.activated(calendar::turn, "COUGH", reduced, mod)) {
                 cough(it.get_harmful_cough());
             }
-            
+
             // Handle vomiting
             mod = vomit_mod();
             if (it.activated(calendar::turn, "VOMIT", reduced, mod)) {
@@ -6941,7 +6941,7 @@ void player::hardcoded_effects(effect &it)
                 recovered = true;
             }
         }
-        if (!recovered) {        
+        if (!recovered) {
             // Move up to infection
             if (dur > 3600) {
                 add_effect("infected", 1, bp, true);
@@ -9316,181 +9316,303 @@ int player::drink_from_hands(item& water) {
     return charges_consumed;
 }
 
-
-bool player::consume(int target_position)
+bool player::consume( int target_position )
 {
-    item *to_eat = NULL;
-    it_comest *comest = NULL;
-    int which = -3; // Helps us know how to delete the item which got eaten
+    it_comest *comest = nullptr;
+    consume_loc loc = CONSUME_NONE; // Helps us know how to delete the item which got eaten
 
-    if(target_position == INT_MIN) {
-        add_msg_if_player( m_info, _("You do not have that item."));
+    const root_item cit = consume_choose_item( target_position, loc );
+    if( loc == CONSUME_NONE || cit.it == nullptr ) {
         return false;
-    } if (is_underwater()) {
-        add_msg_if_player( m_info, _("You can't do that while underwater."));
-        return false;
-    } else if( target_position < -1 ) {
-        add_msg_if_player( m_info, _( "You can't eat worn items, you have to take them off." ) );
-        return false;
-    } else if (target_position == -1) {
-        // Consume your current weapon
-        if (weapon.is_food_container(this)) {
-            to_eat = &weapon.contents[0];
-            which = -2;
-            if (weapon.contents[0].is_food()) {
-                comest = dynamic_cast<it_comest*>(weapon.contents[0].type);
-            }
-        } else if (weapon.is_food(this)) {
-            to_eat = &weapon;
-            which = -1;
-            comest = dynamic_cast<it_comest*>(weapon.type);
+    }
+
+    int used_amount = 0;
+    bool consumed = false;
+    comest = dynamic_cast<it_comest*>( cit.it->type );
+    if( comest != nullptr ) {
+        if( comest->comesttype == "FOOD" || comest->comesttype == "DRINK" ) {
+            consumed = consume_food( cit.it, comest, used_amount );
+        } else if( comest->comesttype == "MED" ) {
+            consumed = consume_med( cit.it, comest, used_amount );
         } else {
-            add_msg_if_player(m_info, _("You can't eat your %s."), weapon.tname().c_str());
-            if(is_npc()) {
-                debugmsg("%s tried to eat a %s", name.c_str(), weapon.tname().c_str());
+            debugmsg( "Unknown comestible type of item: %s\n", cit.it->tname().c_str() );
+        }
+    } else {
+        consumed = consume_bio( cit.it, used_amount );
+    }
+
+    if( !consumed ) {
+        return false;
+    }
+
+    consume_cleanup( loc, target_position, cit, used_amount );
+
+    return true;
+}
+
+root_item player::consume_choose_item( const int target_position, consume_loc &loc )
+{
+    root_item cit;
+
+    if( target_position == INT_MIN ) {
+        add_msg_if_player( m_info, _( "You do not have that item." ) );
+        return cit;
+    }
+    if( is_underwater() ) {
+        add_msg_if_player( m_info, _( "You can't do that while underwater." ) );
+        return cit;
+    }
+
+    if( target_position == -1 ) {
+        // Consume your current weapon
+        cit.it = &weapon;
+        if( weapon.is_food_container( this ) ) {
+            loc = CONSUME_WEAPON_CONTAINER;
+        } else if( weapon.is_food( this ) ) {
+            loc = CONSUME_WEAPON;
+        } else {
+            add_msg_if_player( m_info, _( "You can't eat your %s." ), weapon.tname().c_str() );
+            if( is_npc() ) {
+                debugmsg( "%s tried to eat a %s", name.c_str(), weapon.tname().c_str() );
             }
-            return false;
+        }
+    } else if( target_position < -1 ) {
+        // Consume worn item
+        cit.it = &i_at(target_position);
+        if( cit.it->is_food_container( this ) ) {
+            loc = CONSUME_WORN_CONTAINER;
+        } else {
+            add_msg_if_player( m_info, _( "You can't eat worn items, you have to take them off." ) );
         }
     } else {
         // Consume item from inventory
-        item& it = inv.find_item(target_position);
-        if (it.is_food_container(this)) {
-            to_eat = &(it.contents[0]);
-            which = 1;
-            if (it.contents[0].is_food()) {
-                comest = dynamic_cast<it_comest*>(it.contents[0].type);
-            }
-        } else if (it.is_food(this)) {
-            to_eat = &it;
-            which = 0;
-            comest = dynamic_cast<it_comest*>(it.type);
+        cit.it = &inv.find_item( target_position );
+        if( cit.it->is_food_container( this ) ) {
+            loc = CONSUME_INVENTORY_CONTAINER;
+        } else if( cit.it->is_food( this ) ) {
+            loc = CONSUME_INVENTORY;
         } else {
-            add_msg_if_player(m_info, _("You can't eat your %s."), it.tname().c_str());
-            if(is_npc()) {
-                debugmsg("%s tried to eat a %s", name.c_str(), it.tname().c_str());
+            add_msg_if_player( m_info, _( "You can't eat your %s." ), cit.it->tname().c_str() );
+            if( is_npc() ) {
+                debugmsg( "%s tried to eat a %s", name.c_str(), cit.it->tname().c_str() );
             }
+        }
+    }
+
+    if( cit.it->is_container() ) {
+        cit.root = cit.it;
+        vectoritemref items = cit.it->get_container_food( this );
+        if( cit.root->is_container_mixed() || items.size() > 1 ) {
+            cit.it = ( is_player() ) ? consume_query_item( items ) :
+                                       consume_random_item( items );
+        } else {
+            cit.it = &(item&)items[0];
+        }
+    }
+
+    return cit;
+}
+
+item* player::consume_query_item( const vectoritemref items )
+{
+    uimenu menu;
+
+    menu.text = _( "Choose item to eat" );
+    menu.selected = 0;
+
+    int index = 0;
+    for( item &it : items ) {
+        menu.addentry( index++, true, -1, it.tname() );
+    }
+    menu.addentry( items.size(), true, 'q', _( "Cancel" ) );
+
+    menu.query();
+    if (menu.ret == (int)items.size()) {
+        return nullptr; // cancel
+    }
+
+    return &(item&)items[menu.ret];
+}
+
+item* player::consume_random_item( const vectoritemref items )
+{
+    return &(item&)items[rng( 0, items.size() - 1 )];
+}
+
+bool player::consume_food( item *it, it_comest *comest, int &used_amount )
+{
+    used_amount = 1;
+    return eat( it, comest );
+}
+
+bool player::consume_med( item *it, it_comest *comest, int &used_amount )
+{
+    // Check tools
+    if( comest->tool != "null" ) {
+        bool has = has_amount( comest->tool, 1 );
+        // Tools with charges need to have charges, not just be present.
+        if( item::count_by_charges( comest->tool ) ) {
+            has = has_charges( comest->tool, 1 );
+        }
+        if( !has ) {
+            add_msg_if_player( m_info, _( "You need a %s to consume that!" ),
+                               item::nname( comest->tool ).c_str() );
+            return false;
+        }
+        use_charges( comest->tool, 1 ); // Tools like lighters get used
+    }
+
+    used_amount = 1;
+    //Check special use
+    if( comest->has_use() ) {
+        used_amount = comest->invoke( this, it, false, pos() );
+        if( used_amount <= 0 ) {
             return false;
         }
     }
 
-    if(to_eat == NULL) {
-        debugmsg("Consumed item is lost!");
+    consume_effects( it, comest );
+    moves -= 250;
+
+    return true;
+}
+
+bool player::consume_bio( item *it, int &used_amount )
+{
+    if( it->type->is_food() ) {
+        debugmsg("player::consume_bio( %s ); is food!", it->tname().c_str());
+        return false;
+    }
+    if( it->is_food_container( this ) ) {
+        debugmsg("player::consume_bio( %s ); is food container!", it->tname().c_str());
         return false;
     }
 
-    int amount_used = 1;
-    bool was_consumed = false;
-    if (comest != NULL) {
-        if (comest->comesttype == "FOOD" || comest->comesttype == "DRINK") {
-            was_consumed = eat(to_eat, comest);
-            if (!was_consumed) {
-                return was_consumed;
-            }
-        } else if (comest->comesttype == "MED") {
-            if (comest->tool != "null") {
-                // Check tools
-                bool has = has_amount(comest->tool, 1);
-                // Tools with charges need to have charges, not just be present.
-                if( item::count_by_charges( comest->tool ) ) {
-                    has = has_charges(comest->tool, 1);
-                }
-                if (!has) {
-                    add_msg_if_player(m_info, _("You need a %s to consume that!"),
-                                         item::nname( comest->tool ).c_str());
-                    return false;
-                }
-                use_charges(comest->tool, 1); // Tools like lighters get used
-            }
-            if (comest->has_use()) {
-                //Check special use
-                amount_used = comest->invoke(this, to_eat, false, pos());
-                if( amount_used <= 0 ) {
-                    return false;
-                }
-            }
-            consume_effects(to_eat, comest);
-            moves -= 250;
-            was_consumed = true;
-        } else {
-            debugmsg("Unknown comestible type of item: %s\n", to_eat->tname().c_str());
+    if( it->is_ammo() && has_active_bionic( "bio_batteries" ) &&
+        dynamic_cast<it_ammo*>( it->type )->type == "battery" ) {
+
+        int missing_power = max_power_level - power_level;
+        used_amount = std::min( (long)missing_power, it->charges );
+        charge_power( used_amount );
+
+        if( power_level == max_power_level ) {
+            add_msg_if_player( m_info, _( "Your internal power storage is fully powered." ) );
         }
     } else {
- // Consume other type of items.
-        // For when bionics let you eat fuel
-        if (to_eat->is_ammo() && has_active_bionic("bio_batteries") &&
-            dynamic_cast<it_ammo*>(to_eat->type)->type == "battery") {
-            const int factor = 1;
-            int max_change = max_power_level - power_level;
-            if (max_change == 0) {
-                add_msg_if_player(m_info, _("Your internal power storage is fully powered."));
+        if( it->type->is_book() ) {
+            it_book* book = dynamic_cast<it_book*>( it->type );
+            if( book->type != NULL && !query_yn( _( "Really eat %s?" ), it->tname().c_str() ) ) {
+                return false;
             }
-            charge_power(to_eat->charges / factor);
-            to_eat->charges -= max_change * factor; //negative charges seem to be okay
-            to_eat->charges++; //there's a flat subtraction later
-        } else if (!to_eat->is_food() && !to_eat->is_food_container(this)) {
-            if (to_eat->is_book()) {
-                it_book* book = dynamic_cast<it_book*>(to_eat->type);
-                if (book->type != NULL && !query_yn(_("Really eat %s?"), to_eat->tname().c_str())) {
-                    return false;
-                }
-            }
-            int charge = (to_eat->volume() + to_eat->weight()) / 9;
-            if (to_eat->made_of("leather")) {
-                charge /= 4;
-            }
-            if (to_eat->made_of("wood")) {
-                charge /= 2;
-            }
-            charge_power(charge);
-            to_eat->charges = 0;
-            add_msg_player_or_npc( _("You eat your %s."), _("<npcname> eats a %s."),
-                                     to_eat->tname().c_str());
         }
-        moves -= 250;
-        was_consumed = true;
+
+        int charge = ( it->volume() + it->weight() ) / 9;
+        if( it->made_of( "leather" ) ) {
+            charge /= 4;
+        }
+        if( it->made_of( "wood" ) ) {
+            charge /= 2;
+        }
+        charge_power( charge );
+        used_amount = it->charges;
+
+        add_msg_player_or_npc( _( "You eat your %s." ), _( "<npcname> eats a %s." ),
+                               it->tname().c_str() );
     }
 
-    if (!was_consumed) {
-        return false;
-    }
+    moves -= 250;
 
-    // Actions after consume
-    to_eat->charges -= amount_used;
-    if (to_eat->charges <= 0) {
-        if (which == -1) {
-            weapon = ret_null;
-        } else if (which == -2) {
-            weapon.contents.erase(weapon.contents.begin());
-            add_msg_if_player(_("You are now wielding an empty %s."), weapon.tname().c_str());
-        } else if (which == 0) {
-            inv.remove_item(target_position);
-        } else if (which >= 0) {
-            item& it = inv.find_item(target_position);
-            it.contents.erase(it.contents.begin());
-            const bool do_restack = inv.const_stack(target_position).size() > 1;
-            if (!is_npc()) {
-                bool drop_it = false;
-                if (OPTIONS["DROP_EMPTY"] == "no") {
-                    drop_it = false;
-                } else if (OPTIONS["DROP_EMPTY"] == "watertight") {
-                    drop_it = !it.is_watertight_container();
-                } else if (OPTIONS["DROP_EMPTY"] == "all") {
-                    drop_it = true;
-                }
-                if (drop_it) {
-                    add_msg(_("You drop the empty %s."), it.tname().c_str());
-                    g->m.add_item_or_charges(posx, posy, inv.remove_item(target_position));
-                } else {
-                    add_msg(m_info, _("%c - an empty %s"), it.invlet, it.tname().c_str());
-                }
-            }
-            if (do_restack) {
-                inv.restack(this);
-            }
-            inv.unsort();
-        }
-    }
     return true;
+}
+
+void player::consume_cleanup( consume_loc loc, int target_position, const root_item cit, int used_amount )
+{
+    cit.it->charges -= used_amount;
+    if( cit.it->charges <= 0 ) {
+        std::vector<item*> parents;
+        switch ( loc ) {
+            case CONSUME_WEAPON:
+                weapon = ret_null;
+                break;
+            case CONSUME_WEAPON_CONTAINER:
+                consume_remove_item( cit );
+                if( weapon.is_container_empty() ) {
+                    // for empty cans and stuff
+                    add_msg_if_player( _( "You are now wielding an empty %s." ), weapon.tname().c_str() );
+                }
+                break;
+            case CONSUME_INVENTORY:
+                inv.remove_item( target_position );
+                break;
+            case CONSUME_WORN_CONTAINER:
+                parents = consume_remove_item( cit );
+                if( !is_npc() ) {
+                    item &cont = *parents[1];
+                    if( options_drop_container( cont ) ) {
+                        add_msg( _( "You drop the empty %s." ), cont.tname().c_str() );
+                        if( parents.size() > 2 ) { // container is not directly in inventory
+                            item &parent = *parents[2];
+                            parent.pull_out( &cont );
+                            g->m.add_item_or_charges( posx, posy, cont );
+                        } else { // container is directly in inventory
+                            g->m.add_item_or_charges( posx, posy, inv.remove_item( target_position ) );
+                        }
+                    } else if( cont.is_container_empty() && parents.size() == 2 ) { // container is directly in inventory
+                        add_msg( m_info, _( "%c - an empty %s" ), cont.invlet, cont.tname().c_str() );
+                    }
+                }
+                break;
+            case CONSUME_INVENTORY_CONTAINER:
+                parents = consume_remove_item( cit );
+                const bool do_restack = inv.const_stack( target_position ).size() > 1;
+                if( !is_npc() ) {
+                    item &cont = *parents[1];
+                    if( options_drop_container( cont ) ) {
+                        add_msg( _( "You drop the empty %s." ), cont.tname().c_str() );
+                        if( parents.size() > 2 ) { // container is not directly in inventory
+                            item &parent = *parents[2];
+                            parent.pull_out( &cont );
+                            g->m.add_item_or_charges( posx, posy, cont );
+                        } else { // container is directly in inventory
+                            g->m.add_item_or_charges( posx, posy, inv.remove_item( target_position ) );
+                        }
+                    } else if( cont.is_container_empty() && parents.size() == 2 ) { // container is directly in inventory
+                        add_msg( m_info, _( "%c - an empty %s" ), cont.invlet, cont.tname().c_str() );
+                    }
+                }
+                if( do_restack ) {
+                    inv.restack( this );
+                }
+                inv.unsort();
+                break;
+        }
+    }
+}
+
+std::vector<item*> player::consume_remove_item( const root_item cit )
+{
+    std::vector<item*> parents;
+
+    cit.root->find_parents( cit.it->get_uid(), parents );
+    if( parents.size() > 1 ) {
+        item* cont = parents[1];
+        cont->pull_out( cit.it );
+    }
+
+    return parents;
+}
+
+bool player::options_drop_container( const item &it ) const
+{
+    if ( it.is_container_empty() ) {
+        if( OPTIONS["DROP_EMPTY"] == "all" ) {
+            return true;
+        }
+        if( OPTIONS["DROP_EMPTY"] == "watertight" ) {
+            return it.is_watertight_container();
+        }
+    }
+    return false;
 }
 
 bool player::eat(item *eaten, it_comest *comest)
@@ -9682,14 +9804,14 @@ bool player::eat(item *eaten, it_comest *comest)
     if( ( comest->nutr > 0 && temp_hunger < capacity ) ||
         ( comest->quench > 0 && temp_thirst < capacity ) ) {
         if ((spoiled) && !(has_trait("SAPROPHAGE")) ){//rotten get random nutrification
-            if (!query_yn(_("You can hardly finish it all. Consume it?"))) {
+            if (!query_yn(_("You can hardly finish your %s. Consume it?"), eaten->tname().c_str())) {
                 return false;
             }
         } else {
             if ( (( comest->nutr > 0 && temp_hunger < capacity ) ||
               ( comest->quench > 0 && temp_thirst < capacity )) &&
               ( (!(has_trait("EATHEALTH"))) || (!(has_trait("SLIMESPAWNER"))) ) ) {
-                if (!query_yn(_("You will not be able to finish it all. Consume it?"))) {
+                if (!query_yn(_("You will not be able to finish your %s. Consume it?"), eaten->tname().c_str())) {
                 return false;
                 }
             }
@@ -10699,6 +10821,14 @@ bool player::wear_item(item *to_wear, bool interactive)
             // Checks to see if the player is wearing shoes
             if(interactive){
                 add_msg(m_info, _("You're already wearing footwear!"));
+            }
+            return false;
+        }
+
+        // only one backpack is allowed
+        if (to_wear->covers(bp_torso) && to_wear->has_flag("BACKPACK") && is_wearing_backpack()) {
+            if(interactive){
+                add_msg(m_info, _("You're already wearing a backpack!"));
             }
             return false;
         }
@@ -12111,6 +12241,10 @@ int player::encumb(body_part bp, double &layers, int &armorenc) const
                 level = OUTER_LAYER;
             } else if ( worn[i].has_flag( "BELTED") ) {
                 level = BELTED_LAYER;
+            } else if ( worn[i].has_flag( "BACK" ) ) {
+                level = BACKPACK_LAYER;
+            } else if ( worn[i].has_flag( "OVER_SHOULDER") ) {
+                level = OVER_SHOULDER_LAYER;
             } else {
                 level = REGULAR_LAYER;
             }
@@ -12710,6 +12844,68 @@ bool player::is_wearing_shoes(std::string side) const
     return (left && right);
 }
 
+item* player::find_item_by_uid( UID uid )
+{
+    item* found = nullptr;
+    if( has_weapon() ) {
+        found = weapon.find_item( uid );
+    }
+    if( found == nullptr ) {
+        for( item &it : worn ) {
+            found = it.find_item( uid );
+            if ( found != nullptr ) {
+                break;
+            }
+        }
+    }
+    if( found == nullptr ) {
+        found = inv.find_item_by_uid( uid );
+    }
+
+    return found;
+}
+
+bool player::find_parents_by_uid( UID uid, std::vector<item*> &parents )
+{
+    if( has_weapon() ) {
+        if( weapon.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+    for( item &it : worn ) {
+        if( it.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+    if( inv.find_parents_by_uid( uid, parents ) ) {
+        return true;
+    }
+
+    return false;
+}
+
+bool player::is_wearing_backpack() const
+{
+    for( auto &i : worn ) {
+        const item *worn_item = &i;
+        if( i.covers( bp_torso ) && worn_item->has_flag( "BACKPACK" ) ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+item* player::get_worn_backpack()
+{
+    for( auto &i : worn ) {
+        item *worn_item = &i;
+        if( i.covers( bp_torso ) && worn_item->has_flag( "BACKPACK" ) ) {
+            return worn_item;
+        }
+    }
+    return nullptr;
+}
+
 double player::footwear_factor() const
 {
     double ret = 0;
@@ -12981,18 +13177,27 @@ void player::cancel_activity()
     activity = player_activity();
 }
 
-std::vector<item*> player::has_ammo(ammotype at)
+std::vector<root_item> player::has_ammo( ammotype at )
 {
-    std::vector<item*> result = inv.all_ammo(at);
-    if (weapon.is_of_ammo_type_or_contains_it(at)) {
-        result.push_back(&weapon);
+    std::vector<root_item> ammo;
+
+    inv.find_ammo( at, ammo );
+
+    std::vector<item *> am;
+    weapon.find_ammo( at, am );
+    for ( item *it : am ) {
+        ammo.push_back( root_item( &weapon, it ) );
     }
-    for( auto &elem : worn ) {
-        if( elem.is_of_ammo_type_or_contains_it( at ) ) {
-            result.push_back( &elem );
+
+    for( item &wi : worn ) {
+        std::vector<item *> am;
+        wi.find_ammo( at, am );
+        for ( item *it : am ) {
+            ammo.push_back( root_item( &wi, it ) );
         }
     }
-    return result;
+
+    return ammo;
 }
 
 bool player::has_gun_for_ammo( const ammotype &at ) const

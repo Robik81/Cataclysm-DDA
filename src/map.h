@@ -384,11 +384,11 @@ class map
  int bash_strength(const int x, const int y);
  /** Returns min_str of the furniture or terrain at x,y */
  int bash_resistance(const int x, const int y);
- /** Returns a success rating from -1 to 10 for a given tile based on a set strength, used for AI movement planning 
+ /** Returns a success rating from -1 to 10 for a given tile based on a set strength, used for AI movement planning
   *  Values roughly correspond to 10% increment chances of success on a given bash, rounded down. -1 means the square is not bashable */
  int bash_rating(const int str, const int x, const int y);
- 
- /** Generates rubble at the given location, if overwrite is true it just writes on top of what currently exists 
+
+ /** Generates rubble at the given location, if overwrite is true it just writes on top of what currently exists
   *  floor_type is only used if there is a non-bashable wall at the location or with overwrite = true */
  void make_rubble(const int x, const int y, furn_id rubble_type = f_rubble, bool items = false,
                     ter_id floor_type = t_dirt, bool overwrite = false);
@@ -481,6 +481,8 @@ void add_corpse(int x, int y);
  // Accessors to retrieve a mutable reference to an item.
  item *get_item( int x, int y, int i );
  item *get_item( const int x, const int y, std::vector<item>::const_iterator i );
+ item* find_item_by_uid( int x, int y, UID uid );
+ bool find_parents_by_uid( int x, int y, UID uid, std::vector<item*> &parents );
  itemslice i_stacked(std::vector<item>& items);
  item water_from(const int x, const int y);
  item swater_from(const int x, const int y);

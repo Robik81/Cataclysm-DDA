@@ -2673,6 +2673,30 @@ item *map::get_item( const int x, const int y, std::vector<item>::const_iterator
     return get_item( x, y, offset );
 }
 
+item* map::find_item_by_uid( int x, int y, UID uid )
+{
+    item* found;
+    for( item &it : i_at_mutable( x, y ) ) {
+        found = it.find_item( uid );
+        if ( found != nullptr ) {
+            return found;
+        }
+    }
+
+    return nullptr;
+}
+
+bool map::find_parents_by_uid( int x, int y, UID uid, std::vector<item*> &parents )
+{
+    for( item &it : i_at_mutable( x, y ) ) {
+        if( it.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 itemslice map::i_stacked(std::vector<item>& items)
 {
     //create a new container for our stacked items

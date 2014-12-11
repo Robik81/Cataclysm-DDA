@@ -779,6 +779,7 @@ void Item_factory::load( islot_container &slot, JsonObject &jo )
     slot.watertight = jo.get_bool( "watertight", false );
     slot.preserves = jo.get_bool( "preserves", false );
     slot.rigid = jo.get_bool( "rigid", false );
+    slot.max_size = jo.get_int( "max_size", 0 );
 }
 
 void Item_factory::load_gunmod(JsonObject &jo)

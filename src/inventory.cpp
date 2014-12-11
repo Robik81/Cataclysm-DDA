@@ -739,6 +739,47 @@ item &inventory::find_item(int position)
     return iter->front();
 }
 
+item* inventory::find_item_by_uid( UID uid )
+{
+    item* found;
+    for( std::list<item> &l : items ) {
+        for( item &it : l ) {
+            found = it.find_item( uid );
+            if ( found != nullptr ) {
+                return found;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+bool inventory::find_parents_by_uid( UID uid, std::vector<item*> &parents )
+{
+    for( std::list<item> &l : items ) {
+        for( item &it : l ) {
+            if( it.find_parents( uid, parents ) ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void inventory::find_ammo( const ammotype &type, std::vector<root_item> &ammo )
+{
+    for( std::list<item> &l : items ) {
+        for( item &it : l ) {
+            std::vector<item *> am;
+            it.find_ammo( type, am );
+            for( item *i : am ) {
+                ammo.push_back( root_item( &it, i ) );
+            }
+        }
+    }
+}
+
 int inventory::invlet_to_position( char invlet ) const
 {
     int i = 0;

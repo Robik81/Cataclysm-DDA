@@ -41,23 +41,17 @@
 				<Compiler>
 					<Add option="-Os" />
 					<Add option="-O2" />
+					<Add option="-DSDLTILES" />
 					<Add option="-DTILES" />
 					<Add option="-DRELEASE=1" />
-					<Add directory="WinDepend/SDLttf/SDL_ttf-2.0.11/include" />
-					<Add directory="WinDepend/SDL-1.2.15/include/SDL" />
-					<Add directory="WinDepend/SDLImg_binVC/SDL_image-1.2.12/include" />
+					<Add directory="WinDepend" />
 				</Compiler>
 				<Linker>
-					<Add library="libSDL.dll" />
-					<Add library="SDL_ttf" />
-					<Add library="WinDepend\SDLttf\SDL_ttf-2.0.11\lib\x86\SDL_ttf.lib" />
-					<Add library="WinDepend\SDL-1.2.15\lib\libSDL.dll.a" />
-					<Add library="WinDepend\SDL-1.2.15\lib\libSDLmain.a" />
-					<Add library="WinDepend\SDLImg_binVC\SDL_image-1.2.12\lib\x86\SDL_image.lib" />
-					<Add directory="WinDepend/SDL-1.2.15/lib" />
-					<Add directory="WinDepend/SDLttf/SDL_ttf-2.0.11/lib/x86" />
-					<Add directory="WinDepend/libiconv/lib" />
-					<Add directory="WinDepend/SDLImg_binVC/SDL_image-1.2.12/lib/x86" />
+					<Add library="WinDepend\SDL2.lib" />
+					<Add library="WinDepend\SDL2_image.lib" />
+					<Add library="WinDepend\SDL2_ttf.lib" />
+					<Add library="WinDepend\SDL2main.lib" />
+					<Add directory="WinDepend" />
 				</Linker>
 			</Target>
 			<Target title="Release -SDL -Localized">

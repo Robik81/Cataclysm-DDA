@@ -5117,6 +5117,35 @@
 },
 {
   "type" : "recipe",
+  "result": "bag_canvas_medium",
+  "category": "CC_OTHER",
+  "subcategory": "CSC_OTHER_CONTAINERS",
+  "skill_used": "tailor",
+  "difficulty": 2,
+  "time": 20000,
+  "reversible": false,
+  "autolearn": true,
+  "qualities" : [
+    {"id":"CUT","level":1,"amount":1}
+  ],
+  "tools": [
+    [
+      [ "needle_bone", 40 ],
+      [ "needle_wood", 40 ],
+      [ "sewing_kit", 40 ]
+    ]
+  ],
+  "components": [
+    [
+      [ "rag", 5 ]
+    ],
+    [
+      [ "string_6", 3 ]
+    ]
+  ]
+},
+{
+  "type" : "recipe",
   "result": "bag_canvas",
   "category": "CC_OTHER",
   "subcategory": "CSC_OTHER_CONTAINERS",

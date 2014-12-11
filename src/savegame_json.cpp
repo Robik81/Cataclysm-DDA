@@ -962,6 +962,7 @@ void item::deserialize(JsonObject &data)
         idtmp = "null";
     }
 
+    data.read( "uid", uid );
     data.read( "charges", charges );
     data.read( "burnt", burnt );
 
@@ -1092,6 +1093,9 @@ void item::serialize(JsonOut &json, bool save_contents) const
     json.member( "typeid", typeId() );
     json.member( "bday", bday );
 
+    if ( uid != 0 ) {
+        json.member( "uid", uid );
+    }
     if ( charges != -1 ) {
         json.member( "charges", long(charges) );
     }
@@ -1168,11 +1172,8 @@ void item::serialize(JsonOut &json, bool save_contents) const
         json.member("contents");
         json.start_array();
         for( auto &elem : contents ) {
-            if( !( elem.contents.empty() ) && elem.contents[0].is_gunmod() ) {
-                elem.serialize( json, true ); // save gun mods of holstered pistol
-            } else {
-                elem.serialize( json, false ); // no matryoshka dolls
-            }
+            // yes matryoshka dolls
+            elem.serialize(json, true);
         }
         json.end_array();
     }

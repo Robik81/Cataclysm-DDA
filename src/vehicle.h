@@ -144,6 +144,9 @@ struct vehicle_part : public JsonSerializer, public JsonDeserializer
      * It includes hp, fuel, bigness, ...
      */
     void properties_from_item( const item &used_item );
+
+    item* find_item_by_uid( UID uid );
+    bool find_parents_by_uid( UID uid, std::vector<item*> &parents );
 };
 
 /**
@@ -659,7 +662,7 @@ public:
 
     // upgrades/refilling/etc. see veh_interact.cpp
     void interact ();
-    
+
     //main method for the control of individual engines
     void control_engines();
     // shows ui menu to select an engine

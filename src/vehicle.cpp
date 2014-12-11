@@ -1716,6 +1716,30 @@ item vehicle_part::properties_to_item() const
     return tmp;
 }
 
+item* vehicle_part::find_item_by_uid( UID uid )
+{
+    item* found;
+    for( item &it : items ) {
+        found = it.find_item( uid );
+        if ( found != nullptr ) {
+            return found;
+        }
+    }
+
+    return nullptr;
+}
+
+bool vehicle_part::find_parents_by_uid( UID uid, std::vector<item*> &parents )
+{
+    for( item &it : items ) {
+        if( it.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 /**
  * Mark a part as removed from the vehicle.
  * @return bool true if the vehicle's 0,0 point shifted.
@@ -2698,7 +2722,7 @@ int vehicle::safe_velocity (bool fueled)
     int cnt = 0;
     for (size_t e = 0; e < engines.size(); e++){
         if (is_engine_on(e) &&
-            (!fueled || is_engine_type(e, fuel_type_muscle) || 
+            (!fueled || is_engine_type(e, fuel_type_muscle) ||
             fuel_left (part_info(engines[e]).fuel_type))) {
             int m2c = 100;
 
@@ -3036,7 +3060,7 @@ void vehicle::power_parts (tripoint sm_loc)//TODO: more categories of powered pa
         // Gas engines require epower to run for ignition system, ECU, etc.
         for( size_t e = 0; e < engines.size(); ++e ) {
             if(is_engine_type_on(e, fuel_type_gasoline) ||
-               is_engine_type_on(e, fuel_type_diesel)) {
+                is_engine_type_on(e, fuel_type_diesel)) {
                 gas_epower += part_info(engines[e]).epower;
             }
         }
