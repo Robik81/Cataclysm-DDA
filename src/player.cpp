@@ -9531,7 +9531,6 @@ bool player::consume_bio( item *it, int &used_amount )
         debugmsg("player::consume_bio( %s ); is food container!", it->tname().c_str());
         return false;
     }
-    it_comest *comest = dynamic_cast<it_comest*>( to_eat->type );
 
     if( it->is_ammo() && has_active_bionic( "bio_batteries" ) &&
         dynamic_cast<it_ammo*>( it->type )->type == "battery" ) {
@@ -9544,9 +9543,8 @@ bool player::consume_bio( item *it, int &used_amount )
             add_msg_if_player( m_info, _( "Your internal power storage is fully powered." ) );
         }
     } else {
-        if( it->type->is_book() ) {
-            it_book* book = dynamic_cast<it_book*>( it->type );
-            if( book->type != NULL && !query_yn( _( "Really eat %s?" ), it->tname().c_str() ) ) {
+        if( it->type->book != nullptr ) {
+            if( !query_yn( _( "Really eat %s?" ), it->tname().c_str() ) ) {
                 return false;
             }
         }
