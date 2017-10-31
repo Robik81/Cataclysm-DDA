@@ -161,6 +161,7 @@ class game
 {
         friend class editmap;
         friend class advanced_inventory;
+        friend class hybrid_inventory;
         friend class main_menu;
         friend class target_handler;
     public:
@@ -616,6 +617,8 @@ class game
             LEFT_TERMINAL_EDGE,
         };
         int inventory_item_menu( int pos, int startx = 0, int width = 50,
+                                 inventory_item_menu_positon position = RIGHT_OF_INFO );
+        int inventory_item_menu( item &oThisItem, int iStartX = 0, int iWidth = 50,
                                  inventory_item_menu_positon position = RIGHT_OF_INFO );
 
         /** Custom-filtered menu for inventory and nearby items and those that within specified radius */

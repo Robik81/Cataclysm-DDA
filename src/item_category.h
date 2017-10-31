@@ -37,6 +37,8 @@ class item_category
         std::string id() const;
         int sort_rank() const;
 
+        void set_name(const std::string &name);
+
         /**
          * Comparison operators
          *

@@ -884,8 +884,10 @@ invlets_bitset Character::allocated_invlets() const
     invlets_bitset invlets = inv.allocated_invlets();
 
     invlets.set( weapon.invlet );
+    weapon.add_content_invlets( invlets );
     for( const auto &w : worn ) {
         invlets.set( w.invlet );
+        w.add_content_invlets( invlets );
     }
 
     invlets[0] = false;

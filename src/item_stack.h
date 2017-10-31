@@ -6,7 +6,8 @@
 #include <list>
 
 #include "units.h"
-#include "item.h"
+
+class item;
 
 // A wrapper class to bundle up the references needed for a caller to safely manipulate
 // items and obtain information about items at a particular map x/y location.
@@ -61,5 +62,22 @@ class item_stack
         item *stacks_with( const item &it );
         const item *stacks_with( const item &it ) const;
 };
+
+class container_stack : public item_stack
+{
+    private:
+        item *container;
+    public:
+        container_stack( std::list<item> *newstack, item *container ) :
+            item_stack( newstack ), container( container ) {};
+        std::list<item>::iterator erase( std::list<item>::iterator it ) override;
+        void push_back( const item &newitem ) override;
+        void insert_at( std::list<item>::iterator index, const item &newitem ) override;
+        int count_limit() const override {
+            return INT_MAX;
+        }
+        units::volume max_volume() const override;
+};
+
 
 #endif

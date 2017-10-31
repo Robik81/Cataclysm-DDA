@@ -23,7 +23,12 @@
 #include "units.h"
 #include "visitable.h"
 
+typedef std::bitset<std::numeric_limits<char>::max()> invlets_bitset;
+
 class item;
+
+#include "item_his.h"
+#include "item_stack.h"
 
 namespace cata
 {
@@ -177,6 +182,52 @@ inline bool is_crafting_component( const item &component );
 
 class item : public visitable<item>
 {
+    private:
+        UID uid = uid_spec::UID_NONE;
+
+    public:
+        // checks if item has same uid as parameter
+        bool is_uid(UID uid) const;
+        // use if you need uid from the item, if item does not have uid assigned yet, it is generated
+        // for check if item has specific uid, use is_uid() function instead
+        UID get_uid();
+        // recursively tries to find item with specified uid, returns nullptr if not found
+        item *find_item(UID uid);
+        /**
+        * Finds item with specified uid and its parents (containers it is in) up to calling item included
+        * @param uid Unique item identifier
+        * @param &parents Supply the vector for found item and its parents
+        * @return Returns true if item is found
+        */
+        bool find_parents(UID uid, std::vector<item *> &parents);
+        void pull_out(item *payload);
+        void pull_out(item *payload, long quantity);
+        /**
+        * Load container with item, checks for errors
+        * @param it Item to load the container with.
+        * @param err Contains error message if function returns false.
+        * @return Returns false in case of error
+        */
+        bool load_with(item &it, std::string &err);
+        bool can_load_with(item &it, std::string &err);
+        // max_size is in ml ( 1 volume = 250 ml )
+        container_stack get_container_stack();
+        container_stack get_container_stack() const;
+        units::volume get_container_max_size() const;
+        units::volume get_container_used_capacity() const;
+        units::volume get_container_remaing_capacity() const;
+        void get_container_content(listcitemref &items) const;
+        std::vector<intcitemref> get_container_content() const;
+        void get_container_food(listitemref &items);
+        vectoritemref get_container_food();
+        bool static compare(const item &first, const item &second);
+        bool static compare_tname(const item &first, const item &second);
+        bool static same(const item &first, const item &second);
+        bool is_container_mixed() const;
+        bool is_container_liquid() const;
+        bool is_container_liquid(itype_id liquid) const;
+        void add_content_invlets(invlets_bitset &invlets) const;
+
     public:
         item();
 
@@ -1832,7 +1883,7 @@ class item : public visitable<item>
         /**
         * Returns label from "item_label" itemvar and quantity
         */
-        std::string label( unsigned int quantity = 0 ) const;
+        std::string label( unsigned int quantity = 1 ) const;
 
         bool has_infinite_charges() const;
 

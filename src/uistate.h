@@ -50,6 +50,10 @@ class uistatedata
         int adv_inv_re_enter_move_all = 0;
         int adv_inv_aim_all_location = 1;
         std::map<int, std::list<item>> adv_inv_veh_items, adv_inv_map_items;
+        int adv_inv_left_container_location = -1;
+        UID adv_inv_left_container_uid = 0;
+        int adv_inv_right_container_location = -1;
+        UID adv_inv_right_container_uid = 0;
 
         int ags_pay_gas_selected_pump = 0;
 
@@ -153,6 +157,10 @@ class uistatedata
             json.member( "hidden_recipes", hidden_recipes );
             json.member( "favorite_recipes", favorite_recipes );
             json.member( "recent_recipes", recent_recipes );
+            json.member( "adv_inv_left_container_location", adv_inv_left_container_location );
+            json.member( "adv_inv_left_container_uid", adv_inv_left_container_uid );
+            json.member( "adv_inv_right_container_location", adv_inv_right_container_location );
+            json.member( "adv_inv_right_container_uid", adv_inv_right_container_uid );
 
             json.member( "input_history" );
             json.start_object();
@@ -231,6 +239,10 @@ class uistatedata
             jo.read( "adv_inv_container_in_vehicle", adv_inv_container_in_vehicle );
             jo.read( "adv_inv_container_type", adv_inv_container_type );
             jo.read( "adv_inv_container_content_type", adv_inv_container_content_type );
+            jo.read( "adv_inv_left_container_location", adv_inv_left_container_location );
+            jo.read( "adv_inv_left_container_uid", adv_inv_left_container_uid );
+            jo.read( "adv_inv_right_container_location", adv_inv_right_container_location );
+            jo.read( "adv_inv_right_container_uid", adv_inv_right_container_uid );
             jo.read( "overmap_blinking", overmap_blinking );
             jo.read( "overmap_show_overlays", overmap_show_overlays );
             jo.read( "overmap_land_use_codes", overmap_land_use_codes );

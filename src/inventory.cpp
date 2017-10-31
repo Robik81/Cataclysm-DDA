@@ -110,6 +110,34 @@ invlet_favorites::get_invlets_by_id() const
 
 inventory::inventory() = default;
 
+item *inventory::find_item_by_uid( UID uid )
+{
+    item *found;
+    for( std::list<item> &l : items ) {
+        for( item &it : l ) {
+            found = it.find_item( uid );
+            if( found != nullptr ) {
+                return found;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+bool inventory::find_parents_by_uid( UID uid, std::vector<item *> &parents )
+{
+    for( std::list<item> &l : items ) {
+        for( item &it : l ) {
+            if( it.find_parents( uid, parents ) ) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 invslice inventory::slice()
 {
     invslice stacks;
@@ -654,7 +682,11 @@ void inventory::dump( std::vector<item *> &dest )
 {
     for( auto &elem : items ) {
         for( auto &elem_stack_iter : elem ) {
-            dest.push_back( &( elem_stack_iter ) );
+            item *i = &( elem_stack_iter );
+            i->visit_items( [&dest]( item * it ) {
+                dest.push_back( it );
+                return it->is_container_mixed() ? VisitResponse::NEXT : VisitResponse::SKIP;
+            } );
         }
     }
 }
@@ -1106,6 +1138,7 @@ invlets_bitset inventory::allocated_invlets() const
     for( const auto &stack : items ) {
         const char invlet = stack.front().invlet;
         invlets.set( invlet );
+        stack.front().add_content_invlets( invlets );
     }
     invlets[0] = false;
     return invlets;

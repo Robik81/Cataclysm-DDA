@@ -126,6 +126,7 @@ enum pickup_answer : int {
     WEAR,
     SPILL,
     STASH,
+    STASH_INTO_CONTAINER,
     NUM_ANSWERS
 };
 
@@ -179,6 +180,8 @@ bool pick_one_up( const tripoint &pickup_target, item &newit, vehicle *veh,
     bool picked_up = false;
     pickup_answer option = CANCEL;
     item leftovers = newit;
+    std::string err;
+    item *container = nullptr;
     const auto wield_check = u.can_wield( newit );
 
     if( newit.invlet != '\0' &&
@@ -224,13 +227,17 @@ bool pick_one_up( const tripoint &pickup_target, item &newit, vehicle *veh,
             option = CANCEL;
         }
     } else if( !u.can_pickVolume( newit ) ) {
-        if( !autopickup ) {
-            const std::string &explain = string_format( _( "Not enough capacity to stash %s" ),
-                                         newit.display_name() );
-            option = handle_problematic_pickup( newit, offered_swap, explain );
-            did_prompt = true;
+        if( get_option<bool>( "HYBRID_INVENTORY" ) && ( container = u.can_pickVolume_into_container( newit ) ) != nullptr ) {
+            option = STASH_INTO_CONTAINER;
         } else {
-            option = CANCEL;
+            if( !autopickup ) {
+                const std::string &explain = string_format( _( "Not enough capacity to stash %s" ),
+                                             newit.display_name() );
+                option = handle_problematic_pickup( newit, offered_swap, explain );
+                did_prompt = true;
+            } else {
+                option = CANCEL;
+            }
         }
     } else {
         option = STASH;
@@ -258,6 +265,10 @@ bool pick_one_up( const tripoint &pickup_target, item &newit, vehicle *veh,
             } else {
                 add_msg( m_neutral, wield_check.c_str() );
             }
+            break;
+        case STASH_INTO_CONTAINER:
+            picked_up = container->load_with( newit, err );
+            add_msg( m_info, _( "You stashed %s into your %s" ), newit.display_name().c_str(), container->display_name().c_str() );
             break;
         case SPILL:
             if( newit.is_container_empty() ) {

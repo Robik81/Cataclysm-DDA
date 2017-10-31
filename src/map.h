@@ -27,6 +27,7 @@
 #include "string_id.h"
 #include "units.h"
 #include "cata_utility.h"
+#include "rng.h"
 
 namespace catacurses
 {
@@ -228,6 +229,14 @@ class map
         virtual ~map();
 
         map &operator=( map && ) = default;
+
+        // Visual Output
+        void debug();
+
+
+
+        item *find_item_by_uid( int x, int y, UID uid );
+        bool find_parents_by_uid( int x, int y, UID uid, std::vector<item *> &parents );
 
         /**
          * Sets a dirty flag on the a given cache.

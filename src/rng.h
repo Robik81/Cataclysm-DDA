@@ -32,6 +32,15 @@ int roll_remainder( double value );
 
 int djb2_hash( const unsigned char *input );
 
+enum uid_spec {
+    UID_NONE = 0,
+    UID_MIN = 1000    
+};
+
+typedef unsigned long UID;
+
+UID generate_uid();
+
 double rng_normal( double lo, double hi );
 
 inline double rng_normal( double hi )

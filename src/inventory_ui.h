@@ -23,6 +23,8 @@
 #include "item_category.h"
 
 class Character;
+class inventory;
+
 class item;
 class player;
 struct tripoint;
@@ -485,6 +487,22 @@ class inventory_selector
                         const std::vector<std::list<item *>> &stacks,
                         const item_category *custom_category = nullptr );
 
+        void add_content_items( inventory_column &target_column,
+                                const std::function<item_location( item * )> &locator,
+                                const std::vector<std::list<item *>> &stacks,
+                                const item_category *custom_category,
+                                inventory *inv = nullptr,
+                                int indent = 1 );
+
+        item_category *get_container_category( item *it, int sort_rank );
+
+        /**
+         * Select a location
+         * @param loc Location to select
+         * @return true on success.
+         */
+        bool select( const item_location &loc );
+
         inventory_input get_input();
 
         /** Given an action from the input_context, try to act according to it. */
@@ -537,13 +555,6 @@ class inventory_selector
     public:
 
         void update();
-
-        /**
-         * Select a location
-         * @param loc Location to select
-         * @return true on success.
-         */
-        bool select( const item_location &loc );
 
         inventory_entry get_selected() {
             return get_active_column().get_selected();

@@ -311,6 +311,9 @@ struct vehicle_part {
         /*@}*/
 
     public:
+        item* find_item_by_uid(UID uid);
+        bool find_parents_by_uid(UID uid, std::vector<item*> &parents);       
+
         /** mount point: x is on the forward/backward axis, y is on the left/right axis */
         point mount;
 

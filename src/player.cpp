@@ -7299,10 +7299,16 @@ std::vector<item *> player::inv_dump()
 {
     std::vector<item *> ret;
     if( is_armed() && can_unwield( weapon ).success() ) {
-        ret.push_back( &weapon );
+        weapon.visit_items( [&ret]( item * it ) {
+            ret.push_back( it );
+            return it->is_container_mixed() ? VisitResponse::NEXT : VisitResponse::SKIP;
+        } );
     }
     for( auto &i : worn ) {
-        ret.push_back( &i );
+        i.visit_items( [&ret]( item * it ) {
+            ret.push_back( it );
+            return it->is_container_mixed() ? VisitResponse::NEXT : VisitResponse::SKIP;
+        } );
     }
     inv.dump( ret );
     return ret;
@@ -8114,6 +8120,14 @@ ret_val<bool> player::can_wear( const item &it ) const
         return ret_val<bool>::make_failure( ( is_player() ? _( "You can't wear that much on your head!" )
                                               : string_format( _( "%s can't wear that much on their head!" ), name ) ) );
     }
+											  
+    // only one backpack is allowed
+    if( get_option<bool>( "HYBRID_INVENTORY" ) )
+    {
+        if( it.covers( bp_torso ) && it.has_flag( "BACKPACK" ) && is_wearing_backpack() ) {
+            return ret_val<bool>::make_failure( _( "You're already wearing backpack!" ) );
+        }
+    }
 
     if( has_trait( trait_WOOLALLERGY ) && ( it.made_of( material_id( "wool" ) ) ||
                                             it.item_tags.count( "wooled" ) ) ) {
@@ -8261,6 +8275,85 @@ bool player::unwield()
 
     return true;
 }
+
+item *player::find_item_by_uid( UID uid )
+{
+    item *found = nullptr;
+    if( has_weapon() ) {
+        found = weapon.find_item( uid );
+    }
+    if( found == nullptr ) {
+        for( item &it : worn ) {
+            found = it.find_item( uid );
+            if( found != nullptr ) {
+                break;
+            }
+        }
+    }
+    if( found == nullptr ) {
+        found = inv.find_item_by_uid( uid );
+    }
+
+    return found;
+}
+
+bool player::find_parents_by_uid( UID uid, std::vector<item *> &parents )
+{
+    if( has_weapon() ) {
+        if( weapon.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+    for( item &it : worn ) {
+        if( it.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+    if( inv.find_parents_by_uid( uid, parents ) ) {
+        return true;
+    }
+
+    return false;
+}
+
+bool player::is_wearing_backpack() const
+{
+    for( auto &i : worn ) {
+        const item *worn_item = &i;
+        if( i.covers( bp_torso ) && worn_item->has_flag( "BACKPACK" ) ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+item *player::get_worn_backpack()
+{
+    for( auto &i : worn ) {
+        item *worn_item = &i;
+        if( i.covers( bp_torso ) && worn_item->has_flag( "BACKPACK" ) ) {
+            return worn_item;
+        }
+    }
+    return nullptr;
+}
+
+item *player::can_pickVolume_into_container( item &it )
+{
+    std::string err;
+    item *container = nullptr;
+
+    if( ( container = get_worn_backpack() ) != nullptr && container->can_load_with( it, err ) ) {
+        return container;
+    }
+
+    if( weapon.is_container() && ( container = &weapon ) != nullptr && container->can_load_with( it, err ) ) {
+        return container;
+    }
+
+    return nullptr;
+}
+
 
 // ids of martial art styles that are available with the bio_cqb bionic.
 static const std::vector<matype_id> bio_cqb_styles {{

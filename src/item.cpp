@@ -2555,7 +2555,7 @@ std::string item::info( std::vector<iteminfo> &info, const iteminfo_query *parts
                         insert_separation_line();
                         info.emplace_back( "DESCRIPTION", _( "<bold>Contents of this item</bold>:" ) );
                         contents_header = true;
-                    } else {
+                    } else if( !get_option<bool>( "HYBRID_INVENTORY" ) ) {
                         // Separate items with a blank line
                         info.emplace_back( "DESCRIPTION", space );
                     }
@@ -2576,9 +2576,21 @@ std::string item::info( std::vector<iteminfo> &info, const iteminfo_query *parts
                         info.emplace_back( "CONTAINER", description + space,
                                            string_format( "<num> %s", volume_units_abbr() ), f,
                                            converted_volume );
-                    } else {
+                    } else if( !get_option<bool>( "HYBRID_INVENTORY" ) ) {
                         info.emplace_back( "DESCRIPTION", contents_item.display_name() );
                         info.emplace_back( "DESCRIPTION", description );
+                    }
+                }
+            }
+
+            if( contents_header && get_option<bool>( "HYBRID_INVENTORY" ) ) {
+                for( intcitemref &p : get_container_content() ) {
+                    const item &it = p.second;
+                    if( !it.made_of_from_type( LIQUID ) ) {
+                        std::string desc = ( it.count_by_charges() ) ?
+                                           string_format( "%s", it.display_name( it.charges ).c_str() ) :
+                                           string_format( "%dx %s", p.first, it.display_name().c_str() );
+                        info.emplace_back( iteminfo( "DESCRIPTION", desc ) );
                     }
                 }
             }
@@ -3015,10 +3027,27 @@ std::string item::tname( unsigned int quantity, bool with_prefix, unsigned int t
                                       contents_item.tname( quantity, with_prefix ) );
         }
     } else if( !contents.empty() ) {
-        maintext = string_format( npgettext( "item name",
-                                             "%s with %zd item",
-                                             "%s with %zd items", contents.size() ),
-                                  label( quantity ), contents.size() );
+        if( is_container() && get_option<bool>( "HYBRID_INVENTORY" ) ) {
+            std::string used = string_format( "%.2f",
+                                              round_up( convert_volume( get_container_used_capacity().value() ), 2 ) );
+            std::string total = string_format( "%.2f %s",
+                                               round_up( convert_volume( get_container_capacity().value() ), 2 ), volume_units_abbr() );
+
+            maintext = ( !is_container_mixed() ) ?
+                       string_format( pgettext( "item name", "%s with %s (%d)" ),
+                                      label( quantity ).c_str(),
+                                      contents.front().tname( contents.size() ).c_str(),
+                                      contents.size() ) :
+                       string_format( pgettext( "item name", "%s (%s / %s)" ),
+                                      label( quantity ).c_str(),
+                                      used,
+                                      total );
+        } else {
+            maintext = string_format( npgettext( "item name",
+                                                 "%s with %zd item",
+                                                 "%s with %zd items", contents.size() ),
+                                      label( quantity ), contents.size() );
+        }
     } else {
         maintext = label( quantity );
     }
@@ -3998,7 +4027,7 @@ int item::get_encumber_when_containing(
     int encumber = t->encumber;
 
     // Non-rigid items add additional encumbrance proportional to their volume
-    if( !type->rigid ) {
+    if( !type->rigid && !has_flag( "BACKPACK" ) ) {
         encumber += contents_volume / 250_ml;
     }
 

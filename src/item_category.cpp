@@ -35,3 +35,8 @@ int item_category::sort_rank() const
 {
     return sort_rank_;
 }
+
+void item_category::set_name(const std::string &name)
+{
+    name_ = name;
+}

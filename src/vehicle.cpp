@@ -2221,6 +2221,30 @@ bool vehicle::has_part( const tripoint &pos, const std::string &flag, bool enabl
     return false;
 }
 
+item *vehicle_part::find_item_by_uid( UID uid )
+{
+    item *found;
+    for( item &it : items ) {
+        found = it.find_item( uid );
+        if( found != nullptr ) {
+            return found;
+        }
+    }
+
+    return nullptr;
+}
+
+bool vehicle_part::find_parents_by_uid( UID uid, std::vector<item *> &parents )
+{
+    for( item &it : items ) {
+        if( it.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 std::vector<vehicle_part *> vehicle::get_parts_at( const tripoint &pos, const std::string &flag,
         const part_status_flag condition )
 {

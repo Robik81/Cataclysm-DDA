@@ -197,6 +197,15 @@ class player : public Character
         player &operator=( const player & ) = delete;
         player &operator=( player && );
 
+        item *find_item_by_uid( UID uid );
+        bool find_parents_by_uid( UID uid, std::vector<item *> &parents );
+        /** Returns true if the player is wearing BACKPACK */
+        bool is_wearing_backpack() const;
+        /** Returns worn backpack if the player is wearing BACKPACK or nullptr */
+        item *get_worn_backpack();
+        /** Similar to Character::can_pickVolume except it does check for worn backpack and wielded container, returns valid contaner or nullptr */
+        item *can_pickVolume_into_container( item &it );
+
         // newcharacter.cpp
         bool create( character_type type, const std::string &tempname = "" );
         void randomize( bool random_scenario, points_left &points, bool play_now = false );

@@ -127,6 +127,13 @@
   },
   {
     "type": "EXTERNAL_OPTION",
+    "name": "HYBRID_INVENTORY",
+    "info": "Hybrid inventory system.  If true, enables cargo space in selected items, like bags.",
+    "stype": "bool",
+    "value": false
+  },
+  {
+    "type": "EXTERNAL_OPTION",
     "name": "NO_NPC_FOOD",
     "info": "Disables tracking food, thirst and ( partially ) fatigue for NPCs. If true, NPCs won't need to eat or drink and will only get tired enough to sleep, not to get penalties.",
     "stype": "bool",

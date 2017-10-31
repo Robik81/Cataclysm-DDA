@@ -1735,6 +1735,7 @@ void Item_factory::load( islot_seed &slot, JsonObject &jo, const std::string & )
 void Item_factory::load( islot_container &slot, JsonObject &jo, const std::string & )
 {
     assign( jo, "contains", slot.contains );
+    assign( jo, "max_size", slot.max_size );
     assign( jo, "seals", slot.seals );
     assign( jo, "watertight", slot.watertight );
     assign( jo, "preserves", slot.preserves );

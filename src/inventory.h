@@ -32,7 +32,6 @@ typedef std::vector< std::list<item>* > invslice;
 typedef std::vector< const std::list<item>* > const_invslice;
 typedef std::vector< std::pair<std::list<item>*, int> > indexed_invslice;
 typedef std::unordered_map< itype_id, std::list<const item *> > itype_bin;
-typedef std::bitset<std::numeric_limits<char>::max()> invlets_bitset;
 
 /**
  * Wrapper to handled a set of valid "inventory" letters. "inventory" can be any set of
@@ -221,6 +220,9 @@ class inventory : public visitable<inventory>
         void update_cache_with_item( item &newit );
 
         void copy_invlet_of( const inventory &other );
+		
+        item* find_item_by_uid(UID uid);
+        bool find_parents_by_uid(UID uid, std::vector<item*> &parents);
 
     private:
         invlet_favorites invlet_cache;

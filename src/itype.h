@@ -217,6 +217,10 @@ struct islot_container {
      */
     units::volume contains = 0_ml;
     /**
+      * Max volume of one content item in ml (1 volume = 250ml).
+      */
+    int max_size;
+    /**
      * Can be resealed.
      */
     bool seals = false;

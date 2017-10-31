@@ -1,0 +1,275 @@
+[
+  {
+    "id": "backpack",
+    "copy-from": "backpack",
+    "type": "ARMOR",
+    "name": "backpack",
+    "storage": 0,
+    "flags": [ "BELTED", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 40
+    }	
+  },
+  {
+    "id": "backpack_leather",
+    "copy-from": "backpack_leather",
+    "type": "ARMOR",
+    "name": "leather backpack",
+    "storage": 0,
+    "flags": [ "BELTED", "WATER_FRIENDLY", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 40
+    }	
+  },
+  {
+    "id": "bindle",
+    "copy-from": "bindle",
+    "type": "ARMOR",
+    "name": "bindle",
+    "storage": 0,
+    "rigid": false,
+    "container_data" : {
+        "contains": 20
+    }	
+  },
+  {
+    "id": "briefcase",
+    "copy-from": "briefcase",
+    "type": "ARMOR",
+    "name": "briefcase",
+    "storage": 0,
+    "container_data" : {
+        "contains": 24
+    }	
+  },
+  {
+    "id": "dive_bag",
+    "copy-from": "dive_bag",
+    "type": "ARMOR",
+    "name": "dive bag",
+    "storage": 0,
+    "flags": [ "WATER_FRIENDLY", "BELTED", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 38
+    }	
+  },
+  {
+    "id": "duffelbag",
+    "copy-from": "duffelbag",
+    "type": "ARMOR",
+    "name": "duffel bag",
+    "storage": 0,
+    "flags": [ "BELTED", "WATER_FRIENDLY", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 120
+    }	
+  },
+  {
+    "id": "makeshift_knapsack",
+    "copy-from": "makeshift_knapsack",
+    "type": "ARMOR",
+    "name": "makeshift knapsack",
+    "storage": 0,
+    "flags": [ "BELTED", "WATER_FRIENDLY", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 20
+    }	
+  },
+  {
+    "id": "makeshift_sling",
+    "copy-from": "makeshift_sling",
+    "type": "ARMOR",
+    "name": "makeshift sling",
+    "storage": 0,
+    "rigid": false,
+    "container_data" : {
+        "contains": 30
+    }	
+  },
+  {
+    "id": "mbag",
+    "copy-from": "mbag",
+    "type": "ARMOR",
+    "name": "messenger bag",
+    "storage": 0,
+    "rigid": false,
+    "container_data" : {
+        "contains": 25
+    }	
+  },
+  {
+    "id": "molle_pack",
+    "copy-from": "molle_pack",
+    "type": "ARMOR",
+    "name": "MOLLE pack",
+    "storage": 0,
+    "flags": [ "BELTED", "WATER_FRIENDLY", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 48
+    }	
+  },
+  {
+    "id": "plastic_shopping_bag",
+    "copy-from": "plastic_shopping_bag",
+    "type": "ARMOR",
+    "name": "plastic shopping bag",
+    "storage": 0,
+    "rigid": false,
+    "container_data" : {
+        "contains": 20
+    }	
+  },
+  {
+    "id": "purse",
+    "copy-from": "purse",
+    "type": "ARMOR",
+    "name": "purse",
+    "storage": 0,
+    "rigid": false,
+    "container_data" : {
+        "contains": 20
+    }	
+  },
+  {
+    "id": "ragpouch",
+    "copy-from": "ragpouch",
+    "type": "ARMOR",
+    "name": "pouch",
+    "storage": 0,
+    "rigid": false,
+    "container_data" : {
+        "contains": 9
+    }	
+  },
+  {
+    "id": "rucksack",
+    "copy-from": "rucksack",
+    "type": "ARMOR",
+    "name": "military rucksack",
+    "storage": 0,
+    "flags": [ "BELTED", "WATER_FRIENDLY", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 80
+    }	
+  },
+  {
+    "id": "runner_bag",
+    "copy-from": "runner_bag",
+    "type": "ARMOR",
+    "name": "runner pack",
+    "storage": 0,
+    "flags": [ "BELTED", "WATER_FRIENDLY", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 16
+    }	
+  },
+  {
+    "id": "slingpack",
+    "copy-from": "slingpack",
+    "type": "ARMOR",
+    "name": "sling pack",
+    "storage": 0,
+    "flags": [ "BELTED", "WATER_FRIENDLY", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 32
+    }	
+  },
+  {
+    "id": "straw_basket",
+    "copy-from": "straw_basket",
+    "type": "ARMOR",
+    "name": "straw basket",
+    "storage": 0,
+    "container_data" : {
+        "contains": 9
+    }	
+  },
+  {
+    "id": "suitcase_l",
+    "copy-from": "suitcase_l",
+    "type": "ARMOR",
+    "name": "suitcase",
+    "storage": 0,
+    "container_data" : {
+        "contains": 80
+    }	
+  },
+  {
+    "id": "suitcase_m",
+    "copy-from": "suitcase_m",
+    "type": "ARMOR",
+    "name": "suitcase",
+    "storage": 0,
+    "container_data" : {
+        "contains": 40
+    }	
+  },
+  {
+    "id": "survivor_duffel_bag",
+    "copy-from": "survivor_duffel_bag",
+    "type": "ARMOR",
+    "name": "survivor duffel bag",
+    "storage": 0,
+    "flags": [ "WATER_FRIENDLY", "STURDY", "BELTED", "OVERSIZE", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 150
+    }	
+  },
+  {
+    "id": "survivor_pack",
+    "copy-from": "survivor_pack",
+    "type": "ARMOR",
+    "name": "survivor backpack",
+    "storage": 0,
+    "flags": [ "WATER_FRIENDLY", "STURDY", "BELTED", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 50
+    }	
+  },
+  {
+    "id": "survivor_rucksack",
+    "copy-from": "survivor_rucksack",
+    "type": "ARMOR",
+    "name": "survivor rucksack",
+    "storage": 0,
+    "flags": [ "WATER_FRIENDLY", "STURDY", "BELTED", "OVERSIZE", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 100
+    }	
+  },
+  {
+    "id": "survivor_runner_pack",
+    "copy-from": "survivor_runner_pack",
+    "type": "ARMOR",
+    "name": "survivor runner pack",
+    "storage": 0,
+    "flags": [ "WATER_FRIENDLY", "STURDY", "BELTED", "BACKPACK" ],
+    "rigid": false,
+    "container_data" : {
+        "contains": 18
+    }	
+  },
+  {
+    "id": "swag_bag",
+    "copy-from": "swag_bag",
+    "type": "ARMOR",
+    "name": "swag bag",
+    "storage": 0,
+    "rigid": false,
+    "container_data" : {
+        "contains": 60
+    }	
+  }
+]

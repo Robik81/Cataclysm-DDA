@@ -26,6 +26,7 @@
 #include "game_inventory.h"
 #include "gates.h"
 #include "harvest.h"
+#include "hybrid_inv.h"
 #include "iexamine.h"
 #include "itype.h"
 #include "iuse_actor.h"
@@ -37,6 +38,7 @@
 #include "mongroup.h"
 #include "morale_types.h"
 #include "mtype.h"
+#include "options.h"
 #include "output.h"
 #include "overmapbuffer.h"
 #include "player.h"
@@ -2601,7 +2603,7 @@ void activity_handlers::move_loot_do_turn( player_activity *act, player *p )
 void activity_handlers::adv_inventory_do_turn( player_activity *, player *p )
 {
     p->cancel_activity();
-    advanced_inv();
+    !get_option<bool>("HYBRID_INVENTORY") ? advanced_inv() : hybrid_inv();
 }
 
 void activity_handlers::armor_layers_do_turn( player_activity *, player *p )

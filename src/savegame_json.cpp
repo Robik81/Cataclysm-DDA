@@ -1898,6 +1898,7 @@ void item::io( Archive &archive )
     charges = std::max( charges, 0L );
 
     int cur_phase = static_cast<int>( current_phase );
+    archive.io( "uid", uid, (UID) UID_NONE );
     archive.io( "burnt", burnt, 0 );
     archive.io( "poison", poison, 0 );
     archive.io( "frequency", frequency, 0 );

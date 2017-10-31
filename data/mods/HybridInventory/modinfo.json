@@ -1,0 +1,14 @@
+[
+  {
+    "type": "MOD_INFO",
+    "ident": "hybrid_inventory",
+    "name": "Hybrid inventory",
+    "description": "Hybrid inventory system combining general inventory space and container space on selected items, like bags.",
+    "category": "rebalance",
+    "dependencies": [ "dda" ]
+  },
+  {
+    "type": "WORLD_OPTION",
+    "options": [ "HYBRID_INVENTORY" ]
+  }
+]

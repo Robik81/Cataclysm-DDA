@@ -127,6 +127,31 @@ units::volume map_stack::max_volume() const
 
 // Map class methods.
 
+item *map::find_item_by_uid( int x, int y, UID uid )
+{
+    item *found;
+    for( item &it : i_at( x, y ) ) {
+        found = it.find_item( uid );
+        if( found != nullptr ) {
+            return found;
+        }
+
+    }
+
+    return nullptr;
+}
+
+bool map::find_parents_by_uid( int x, int y, UID uid, std::vector<item *> &parents )
+{
+    for( item &it : i_at( x, y ) ) {
+        if( it.find_parents( uid, parents ) ) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 map::map( int mapsize, bool zlev )
 {
     my_MAPSIZE = mapsize;

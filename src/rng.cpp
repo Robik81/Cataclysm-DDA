@@ -8,6 +8,15 @@
 
 #include "cata_utility.h"
 
+
+UID generate_uid()
+{
+    static std::default_random_engine generator( time( 0 ) );
+    static std::uniform_int_distribution<UID> distribution( UID_MIN, ULONG_MAX );
+
+    return distribution( generator );
+}
+
 unsigned int rng_bits()
 {
     // Whole uint range.

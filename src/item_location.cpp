@@ -68,12 +68,20 @@ class item_location::impl
         impl() = default;
         impl( std::list<item> *what ) :  what( &what->front() ), whatstart( what ) {}
         impl( item *what ) : what( what ) {}
-        impl( int idx ) : idx( idx ) {}
+        impl( int idx, UID uid ) : idx( idx ), uid(uid) {}
 
         virtual ~impl() = default;
 
         virtual bool valid() const {
             return false;
+        }
+
+        bool is_root() const {
+            return root() == nullptr;
+        }
+
+        virtual const item *root() const {
+            return nullptr;
         }
 
         virtual type where() const {
@@ -100,14 +108,15 @@ class item_location::impl
 
         virtual void serialize( JsonOut &js ) const = 0;
 
-        virtual item *unpack( int ) const {
+        virtual item *unpack( int, UID = UID_NONE ) const {
             return nullptr;
         }
 
         item *target() const {
             if( idx >= 0 ) {
-                what = unpack( idx );
+                what = unpack( idx, uid );
                 idx = -1;
+                uid = UID_NONE;
             }
             return what;
         }
@@ -131,6 +140,7 @@ class item_location::impl
         mutable int idx = -1;
         //Only used for stacked cash card currently, needed to be able to process a stack of different items
         mutable std::list<item> *whatstart = nullptr;
+        mutable UID uid = UID_NONE;
 
     public:
         //Flag that controls whether functions like obtain() should stack the obtained item
@@ -156,22 +166,39 @@ class item_location::impl::item_on_map : public item_location::impl
     public:
         item_on_map( const map_cursor &cur, item *which ) : impl( which ), cur( cur ) {}
         item_on_map( const map_cursor &cur, std::list<item> *which ) : impl( which ), cur( cur ) {}
-        item_on_map( const map_cursor &cur, int idx ) : impl( idx ), cur( cur ) {}
+        item_on_map( const map_cursor &cur, int idx, UID uid ) : impl( idx, uid ), cur( cur ) {}
+
 
         bool valid() const override {
             return target() && cur.has_item( *target() );
         }
 
+        const item *root() const override {
+            int idx = find_index( cur, target() );
+            auto parents = cur.parents( *target() );
+            if( parents.size() > 0 ) {
+                auto root = parents.back();
+                return root;
+            }
+            return nullptr;
+        }
+
         void serialize( JsonOut &js ) const override {
+            UID uid = is_root() ? UID_NONE : target()->get_uid();
+
             js.start_object();
             js.member( "type", "map" );
             js.member( "pos", position() );
-            js.member( "idx", find_index( cur, target() ) );
+            js.member( "idx", idx );
+            if ( uid != UID_NONE ) {
+                js.member("uid", uid);
+            }
             js.end_object();
         }
 
-        item *unpack( int idx ) const override {
-            return retrieve_index( cur, idx );
+        item *unpack( int idx, UID uid = UID_NONE ) const override {
+            item *root = retrieve_index( cur, idx );
+            return uid == UID_NONE ? root : root->find_item(uid);
         }
 
         type where() const override {
@@ -249,7 +276,7 @@ class item_location::impl::item_on_person : public item_location::impl
     public:
         item_on_person( Character &who, std::list<item> *which ) : impl( which ), who( who ) {}
         item_on_person( Character &who, item *which ) : impl( which ), who( who ) {}
-        item_on_person( Character &who, int idx ) : impl( idx ), who( who ) {}
+        item_on_person( Character &who, int idx, UID uid ) : impl( idx, uid ), who( who ) {}
 
         bool valid() const override {
             const item *targ = target();
@@ -258,15 +285,31 @@ class item_location::impl::item_on_person : public item_location::impl
             } );
         }
 
+        const item *root() const override {
+            int idx = find_index( who, target() );
+            auto parents = who.parents( *target() );
+            if( parents.size() > 0 ) {
+                auto root = parents.back();
+                return root;
+            }
+            return nullptr;
+        }
+
         void serialize( JsonOut &js ) const override {
+            UID uid = is_root() ? UID_NONE : target()->get_uid();
+
             js.start_object();
             js.member( "type", "character" );
-            js.member( "idx", find_index( who, target() ) );
+            js.member( "idx", idx );
+            if (uid != UID_NONE) {
+                js.member("uid", uid);
+            }
             js.end_object();
         }
 
-        item *unpack( int idx ) const override {
-            return retrieve_index( who, idx );
+        item *unpack( int idx, UID uid = UID_NONE ) const override {
+            item *root = retrieve_index( who, idx );
+            return uid == UID_NONE ? root : root->find_item( uid );
         }
 
         type where() const override {
@@ -376,7 +419,7 @@ class item_location::impl::item_on_vehicle : public item_location::impl
     public:
         item_on_vehicle( const vehicle_cursor &cur, item *which ) : impl( which ), cur( cur ) {}
         item_on_vehicle( const vehicle_cursor &cur, std::list<item> *which ) : impl( which ), cur( cur ) {}
-        item_on_vehicle( const vehicle_cursor &cur, int idx ) : impl( idx ), cur( cur ) {}
+        item_on_vehicle( const vehicle_cursor &cur, int idx, UID uid ) : impl( idx, uid ), cur( cur ) {}
 
         bool valid() const override {
             if( !target() ) {
@@ -391,19 +434,40 @@ class item_location::impl::item_on_vehicle : public item_location::impl
             return false;
         }
 
+        const item *root() const override {
+            if( target() != &cur.veh.parts[cur.part].base ) {
+                int idx = find_index( cur, target() );
+                auto parents = cur.parents( *target() );
+                if( parents.size() > 0 ) {
+                    auto root = parents.back();
+                    return root;
+                }
+            }
+            return nullptr;
+        }
+
         void serialize( JsonOut &js ) const override {
+            UID uid = is_root() ? UID_NONE : target()->get_uid();
+
             js.start_object();
             js.member( "type", "vehicle" );
             js.member( "pos", position() );
             js.member( "part", cur.part );
             if( target() != &cur.veh.parts[ cur.part ].base ) {
-                js.member( "idx", find_index( cur, target() ) );
+                js.member( "idx", idx );
+            }
+            if( uid != UID_NONE ) {
+                js.member( "uid", uid );
             }
             js.end_object();
         }
 
-        item *unpack( int idx ) const override {
-            return idx >= 0 ? retrieve_index( cur, idx ) : &cur.veh.parts[ cur.part ].base;
+        item *unpack( int idx, UID uid = UID_NONE ) const override {
+            if( idx >= 0 ) {
+                item *root = retrieve_index( cur, idx );
+                return uid == UID_NONE ? root : root->find_item( uid );
+            }
+            return &cur.veh.parts[ cur.part ].base;
         }
 
         type where() const override {
@@ -549,21 +613,23 @@ void item_location::deserialize( JsonIn &js )
 
     int idx = -1;
     tripoint pos = tripoint_min;
+    UID uid = UID_NONE;
 
     obj.read( "idx", idx );
     obj.read( "pos", pos );
+    obj.read( "uid", uid );
 
     if( type == "character" ) {
-        ptr.reset( new impl::item_on_person( g->u, idx ) );
+        ptr.reset( new impl::item_on_person( g->u, idx, uid ) );
 
     } else if( type == "map" ) {
-        ptr.reset( new impl::item_on_map( pos, idx ) );
+        ptr.reset( new impl::item_on_map( pos, idx, uid ) );
 
     } else if( type == "vehicle" ) {
         vehicle *const veh = veh_pointer_or_null( g->m.veh_at( pos ) );
         int part = obj.get_int( "part" );
         if( veh && part >= 0 && part < static_cast<int>( veh->parts.size() ) ) {
-            ptr.reset( new impl::item_on_vehicle( vehicle_cursor( *veh, part ), idx ) );
+            ptr.reset( new impl::item_on_vehicle( vehicle_cursor( *veh, part ), idx, uid ) );
         }
     }
 }
@@ -581,6 +647,16 @@ item_location::type item_location::where() const
 tripoint item_location::position() const
 {
     return ptr->position();
+}
+
+bool item_location::is_root() const
+{
+    return ptr->is_root();
+}
+
+const item *item_location::root() const
+{
+    return ptr->root();
 }
 
 std::string item_location::describe( const Character *ch ) const

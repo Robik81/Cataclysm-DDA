@@ -1988,9 +1988,14 @@ void game::handle_key_blocking_activity()
 int game::inventory_item_menu( int pos, int iStartX, int iWidth,
                                const inventory_item_menu_positon position )
 {
+    return inventory_item_menu(u.i_at(pos), iStartX, iWidth, position);
+}
+
+int game::inventory_item_menu( item &oThisItem, int iStartX, int iWidth, 
+                               const inventory_item_menu_positon position)
+{
     int cMenu = static_cast<int>( '+' );
 
-    item &oThisItem = u.i_at( pos );
     if( u.has_item( oThisItem ) ) {
 #if defined(__ANDROID__)
         if( get_option<bool>( "ANDROID_INVENTORY_AUTOADD" ) ) {
@@ -1998,6 +2003,7 @@ int game::inventory_item_menu( int pos, int iStartX, int iWidth,
         }
 #endif
 
+	    int pos = u.get_item_position( &oThisItem ); // TODO: remove after all actions are changed from pos to item
         std::vector<iteminfo> vThisItem;
         std::vector<iteminfo> vDummy;
 
@@ -9126,7 +9132,7 @@ void game::eat( int pos )
 
     item *it = item_loc.get_item();
     pos = u.get_item_position( it );
-    if( pos != INT_MIN ) {
+    if( pos != INT_MIN && item_loc.is_root() ) {
         u.consume( pos );
 
     } else if( u.consume_item( *it ) ) {

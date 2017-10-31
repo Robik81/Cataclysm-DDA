@@ -1078,6 +1078,49 @@ void inventory_selector::add_items( inventory_column &target_column,
     }
 }
 
+void inventory_selector::add_content_items( inventory_column &target_column,
+                                            const std::function<item_location( item * )> &locator,
+                                            const std::vector<std::list<item *>> &stacks,
+                                            const item_category *custom_category,
+                                            inventory *inv,
+                                            int indent )
+{
+    for( const auto &elem : stacks ) {
+        item *it = elem.front();
+        if( inv != nullptr ) {
+            inv->update_invlet( *it, indent < 2 );
+        }
+        auto loc = locator( it );
+
+        add_item( target_column, loc, elem.size(), custom_category );
+        if( it->is_container_mixed() ) {
+            auto stack = it->get_container_stack();
+            add_content_items( target_column,
+                               locator,
+                               restack_items( stack.begin(), stack.end() ),
+                               get_container_category( it, custom_category->sort_rank() ),
+                               inv,
+                               indent + 1 );
+        }
+    }
+}
+
+item_category *inventory_selector::get_container_category( item *it, int sort_rank )
+{
+    static std::map<UID, std::shared_ptr<item_category>> container_categories;
+
+    auto iter = container_categories.find( it->get_uid() );
+    if( iter == container_categories.end() ) {
+        std::shared_ptr<item_category> category_ptr( new item_category( std::to_string( it->get_uid() ),
+                it->label(), sort_rank ) );
+        container_categories[it->get_uid()] = category_ptr;
+        return category_ptr.get();
+    }
+    iter->second->set_name( it->label() ); // update name of the category
+
+    return iter->second.get();
+}
+
 void inventory_selector::add_character_items( Character &character )
 {
     static const item_category items_worn_category( "ITEMS_WORN", translation( "ITEMS WORN" ), -100 );
@@ -1086,19 +1129,41 @@ void inventory_selector::add_character_items( Character &character )
     character.visit_items( [ this, &character ]( item * it ) {
         if( it == &character.weapon ) {
             add_item( own_gear_column, item_location( character, it ), 1, &weapon_held_category );
+            if( it->is_container_mixed() ) {
+                auto stack = it->get_container_stack();
+                add_content_items( own_gear_column, [&character]( item *it ) {
+                    return item_location( character, it );
+                }, restack_items( stack.begin(), stack.end() ), get_container_category( it, -50 ), &character.inv );
+            }
         } else if( character.is_worn( *it ) ) {
             add_item( own_gear_column, item_location( character, it ), 1, &items_worn_category );
+            if( it->is_container_mixed() ) {
+                auto stack = it->get_container_stack();
+                add_content_items( own_gear_column, [&character]( item *it ) {
+                    return item_location( character, it );
+                }, restack_items( stack.begin(), stack.end() ), get_container_category( it, -50 ), &character.inv);
+            }
         }
         return VisitResponse::NEXT;
     } );
     // Visitable interface does not support stacks so it has to be here
     for( const auto &elem : character.inv.slice() ) {
-        if( ( &elem->front() )->ammo_type() == "money" ) {
-            add_item( own_inv_column, item_location( character, elem ), elem->size() );
-        } else {
-            add_items( own_inv_column, [&character]( item * it ) {
+        item *it = &elem->front();
+
+		if( it->ammo_type() == "money" ) {
+		    add_item( own_inv_column, item_location( character, elem ), elem->size() );
+		    continue;
+		}
+
+        add_items( own_inv_column, [&character]( item * it ) {
+            return item_location( character, it );
+        }, restack_items( ( *elem ).begin(), ( *elem ).end(), preset.get_checking_components() ) );
+
+        if( it->is_container_mixed() ) {
+            auto stack = it->get_container_stack();
+            add_content_items( own_inv_column, [&character]( item * it ) {
                 return item_location( character, it );
-            }, restack_items( ( *elem ).begin(), ( *elem ).end(), preset.get_checking_components() ) );
+            }, restack_items( stack.begin(), stack.end() ), get_container_category( it, 100 ), &character.inv );
         }
     }
 }

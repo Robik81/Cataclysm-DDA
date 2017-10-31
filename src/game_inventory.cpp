@@ -179,7 +179,7 @@ void game_menus::inv::common( player &p )
         }
 
         g->refresh_all();
-        res = g->inventory_item_menu( p.get_item_position( location.get_item() ) );
+        res = g->inventory_item_menu( (item &)*location.get_item() );
         g->refresh_all();
 
     } while( loop_options.count( res ) != 0 );

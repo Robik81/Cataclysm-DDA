@@ -26,6 +26,7 @@
 #include "gates.h"
 #include "gun_mode.h"
 #include "help.h"
+#include "hybrid_inv.h"
 #include "input.h"
 #include "itype.h"
 #include "map.h"
@@ -1553,7 +1554,7 @@ bool game::handle_action()
                 if( u.has_active_mutation( trait_SHELL2 ) ) {
                     add_msg( m_info, _( "You can't move mass quantities while you're in your shell." ) );
                 } else {
-                    advanced_inv();
+                    !get_option<bool>("HYBRID_INVENTORY") ? advanced_inv() : hybrid_inv();
                 }
                 break;
 

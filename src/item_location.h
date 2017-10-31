@@ -69,6 +69,12 @@ class item_location
         /** Returns the position where the item is found */
         tripoint position() const;
 
+        /** Returns true if the item is root item (is not nested in any container) */
+        bool is_root() const;
+
+        /** Returns root parent for an item, nullptr if item is the root item itself */
+        const item *root() const;
+
         /** Describes the item location
          *  @param ch if set description is relative to character location */
         std::string describe( const Character *ch = nullptr ) const;

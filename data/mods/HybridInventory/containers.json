@@ -1,0 +1,366 @@
+[
+  {
+    "id":"2lcanteen",
+    "copy-from":"2lcanteen",
+    "type":"CONTAINER",
+    "name":"2.5L canteen",
+    "max_size":1
+  },
+  {
+    "id":"30gal_barrel",
+    "copy-from":"30gal_barrel",
+    "type":"CONTAINER",
+    "name":"30 gallon barrel",
+    "max_size":0
+  },
+  {
+    "id":"30gal_drum",
+    "copy-from":"30gal_drum",
+    "type":"CONTAINER",
+    "name":"steel drum (100L)",
+    "max_size":0
+  },
+  {
+    "id":"55gal_drum",
+    "copy-from":"55gal_drum",
+    "type":"CONTAINER",
+    "name":"steel drum (200L)",
+    "max_size":0
+  },
+  {
+    "id":"bag_canvas",
+    "copy-from":"bag_canvas",
+    "type":"CONTAINER",
+    "name":"canvas sack",
+    "max_size":0
+  },
+  {
+    "id":"bag_canvas_small",
+    "copy-from":"bag_canvas_small",
+    "type":"CONTAINER",
+    "name":"canvas bag",
+    "max_size":0
+  },
+  {
+    "id":"bag_plastic",
+    "copy-from":"bag_plastic",
+    "type":"CONTAINER",
+    "name":"plastic bag",
+    "max_size":0
+  },
+  {
+    "id":"bottle_glass",
+    "copy-from":"bottle_glass",
+    "type":"CONTAINER",
+    "name":"glass bottle",
+    "max_size":1
+  },
+  {
+    "id":"bottle_plastic",
+    "copy-from":"bottle_plastic",
+    "type":"CONTAINER",
+    "name":"plastic bottle",
+    "max_size":1
+  },
+  {
+    "id":"bottle_plastic_small",
+    "copy-from":"bottle_plastic_small",
+    "type":"CONTAINER",
+    "name":"small plastic bottle",
+    "max_size":1
+  },
+  {
+    "id":"bowl_clay",
+    "copy-from":"bowl_clay",
+    "type":"CONTAINER",
+    "name":"clay bowl",
+    "max_size":0
+  },
+  {
+    "id":"bowl_pewter",
+    "copy-from":"bowl_pewter",
+    "type":"CONTAINER",
+    "name":"pewter bowl",
+    "max_size":0
+  },
+  {
+    "id":"bowl_plastic",
+    "copy-from":"bowl_plastic",
+    "type":"CONTAINER",
+    "name":"plastic bowl",
+    "max_size":0
+  },
+  {
+    "id":"box_cigarette",
+    "copy-from":"box_cigarette",
+    "type":"CONTAINER",
+    "name":"pack",
+    "max_size":0
+  },
+  {
+    "id":"box_small",
+    "copy-from":"box_small",
+    "type":"CONTAINER",
+    "name":"cardboard box",
+    "max_size":0
+  },
+  {
+    "id":"bucket",
+    "copy-from":"bucket",
+    "type":"CONTAINER",
+    "name":"bucket",
+    "max_size":0
+  },
+  {
+    "id":"camelbak",
+    "copy-from":"camelbak",
+    "type":"CONTAINER",
+    "name":"hydration pack",
+    "max_size":1
+  },
+  {
+    "id":"can_drink",
+    "copy-from":"can_drink",
+    "type":"CONTAINER",
+    "name":"aluminum can",
+    "max_size":0
+  },
+  {
+    "id":"can_drink_unsealed",
+    "copy-from":"can_drink_unsealed",
+    "type":"CONTAINER",
+    "name":"opened aluminum can",
+    "max_size":0
+  },
+  {
+    "id":"can_food",
+    "copy-from":"can_food",
+    "type":"CONTAINER",
+    "name":"tin can",
+    "max_size":0
+  },
+  {
+    "id":"can_food_unsealed",
+    "copy-from":"can_food_unsealed",
+    "type":"CONTAINER",
+    "name":"opened tin can",
+    "max_size":0
+  },
+  {
+    "id":"canteen",
+    "copy-from":"canteen",
+    "type":"CONTAINER",
+    "name":"plastic canteen",
+    "max_size":1
+  },
+  {
+    "id":"ceramic_bowl",
+    "copy-from":"ceramic_bowl",
+    "type":"CONTAINER",
+    "name":"ceramic bowl",
+    "max_size":0
+  },
+  {
+    "id":"ceramic_cup",
+    "copy-from":"ceramic_cup",
+    "type":"CONTAINER",
+    "name":"ceramic cup",
+    "max_size":0
+  },
+  {
+    "id":"clay_canister",
+    "copy-from":"clay_canister",
+    "type":"CONTAINER",
+    "name":"clay canister",
+    "max_size":1
+  },
+  {
+    "id":"clay_hydria",
+    "copy-from":"clay_hydria",
+    "type":"CONTAINER",
+    "name":"clay hydria",
+    "max_size":1
+  },
+  {
+    "id":"clay_watercont",
+    "copy-from":"clay_watercont",
+    "type":"CONTAINER",
+    "name":"large clay pot",
+    "max_size":1
+  },
+  {
+    "id":"cup_plastic",
+    "copy-from":"cup_plastic",
+    "type":"CONTAINER",
+    "name":"plastic cup",
+    "max_size":0
+  },
+  {
+    "id":"cup_plastic_unsealed",
+    "copy-from":"cup_plastic_unsealed",
+    "type":"CONTAINER",
+    "name":"opened plastic cup",
+    "max_size":0
+  },
+  {
+    "id":"flask_glass",
+    "copy-from":"flask_glass",
+    "type":"CONTAINER",
+    "name":"glass flask",
+    "max_size":1
+  },
+  {
+    "id":"flask_hip",
+    "copy-from":"flask_hip",
+    "type":"CONTAINER",
+    "name":"hip flask",
+    "max_size":1
+  },
+  {
+    "id":"glass",
+    "copy-from":"glass",
+    "type":"CONTAINER",
+    "name":"glass cup",
+    "max_size":0
+  },
+  {
+    "id":"glass_bowl",
+    "copy-from":"glass_bowl",
+    "type":"CONTAINER",
+    "name":"glass bowl",
+    "max_size":0
+  },
+  {
+    "id":"jar_3l_glass",
+    "copy-from":"jar_3l_glass",
+    "type":"CONTAINER",
+    "name":"3L glass jar",
+    "max_size":0
+  },
+  {
+    "id":"jar_3l_glass_sealed",
+    "copy-from":"jar_3l_glass_sealed",
+    "type":"CONTAINER",
+    "name":"sealed 3L glass jar",
+    "max_size":0
+  },
+  {
+    "id":"jar_glass",
+    "copy-from":"jar_glass",
+    "type":"CONTAINER",
+    "name":"glass jar",
+    "max_size":0
+  },
+  {
+    "id":"jar_glass_sealed",
+    "copy-from":"jar_glass_sealed",
+    "type":"CONTAINER",
+    "name":"sealed glass jar",
+    "max_size":0
+  },
+  {
+    "id":"jerrycan",
+    "copy-from":"jerrycan",
+    "type":"CONTAINER",
+    "name":"plastic jerrycan",
+    "max_size":1
+  },
+  {
+    "id":"jerrycan_big",
+    "copy-from":"jerrycan_big",
+    "type":"CONTAINER",
+    "name":"steel jerrycan",
+    "max_size":1
+  },
+  {
+    "id":"jug_clay",
+    "copy-from":"jug_clay",
+    "type":"CONTAINER",
+    "name":"clay jug",
+    "max_size":0
+  },
+  {
+    "id":"jug_plastic",
+    "copy-from":"jug_plastic",
+    "type":"CONTAINER",
+    "name":"gallon jug",
+    "max_size":0
+  },
+  {
+    "id":"keg",
+    "copy-from":"keg",
+    "type":"CONTAINER",
+    "name":"aluminum keg",
+    "max_size":1
+  },
+  {
+    "id":"keg_steel",
+    "copy-from":"keg_steel",
+    "type":"CONTAINER",
+    "name":"steel keg",
+    "max_size":1
+  },
+  {
+    "id":"large_stomach_sealed",
+    "copy-from":"large_stomach_sealed",
+    "type":"CONTAINER",
+    "name":"large sealed stomach",
+    "max_size":1
+  },
+  {
+    "id":"metal_tank",
+    "copy-from":"metal_tank",
+    "type":"CONTAINER",
+    "name":"metal tank (60L)",
+    "max_size":1
+  },
+  {
+    "id":"metal_tank_little",
+    "copy-from":"metal_tank_little",
+    "type":"CONTAINER",
+    "name":"metal tank (2L)",
+    "max_size":1
+  },
+  {
+    "id":"stomach_sealed",
+    "copy-from":"stomach_sealed",
+    "type":"CONTAINER",
+    "name":"sealed stomach",
+    "max_size":1
+  },
+  {
+    "id":"waterskin",
+    "copy-from":"waterskin",
+    "type":"CONTAINER",
+    "name":"small waterskin",
+    "max_size":1
+  },
+  {
+    "id":"waterskin2",
+    "copy-from":"waterskin2",
+    "type":"CONTAINER",
+    "name":"waterskin",
+    "max_size":1
+  },
+  {
+    "id":"waterskin3",
+    "copy-from":"waterskin3",
+    "type":"CONTAINER",
+    "name":"large waterskin",
+    "max_size":1
+  },
+  {
+    "id":"wooden_barrel",
+    "copy-from":"wooden_barrel",
+    "type":"CONTAINER",
+    "name":"wooden barrel",
+    "max_size":1
+  },
+  {
+    "id":"wrapper",
+    "copy-from":"wrapper",
+    "type":"CONTAINER",
+    "name":"paper wrapper",
+    "max_size":0
+  }
+]

@@ -1,108 +1,31 @@
 #pragma once
-#ifndef ADVANCED_INV_H
-#define ADVANCED_INV_H
-
-#include <ctype.h>
-#include <stddef.h>
-#include <array>
-#include <functional>
-#include <list>
-#include <map>
-#include <string>
-#include <vector>
+#ifndef HYBRID_INV_H
+#define HYBRID_INV_H
 
 #include "cursesdef.h"
 #include "enums.h"
 #include "units.h"
+#include "rng.h"
 
-class uilist;
-class vehicle;
-class item;
+#include <string>
+#include <array>
+#include <list>
+#include <vector>
+#include <map>
+#include <functional>
 
-// roll our own, to handle moving stacks better
-typedef std::vector<std::list<item*>> itemstack;
-
-enum aim_exit {
-    exit_none = 0,
-    exit_okay,
-    exit_re_entry
-};
-
-enum aim_location {
-    AIM_INVENTORY = 0,
-    AIM_SOUTHWEST,
-    AIM_SOUTH,
-    AIM_SOUTHEAST,
-    AIM_WEST,
-    AIM_CENTER,
-    AIM_EAST,
-    AIM_NORTHWEST,
-    AIM_NORTH,
-    AIM_NORTHEAST,
-    AIM_DRAGGED,
-    AIM_ALL,
-    AIM_CONTAINER,
-    AIM_WORN,
-    AIM_BACKPACK,
-    AIM_HANDS,
-    NUM_AIM_LOCATIONS = 14,
-    NUM_AIM_LOCATIONS_HIS = 16,
-    // only useful for AIM_ALL
-    AIM_AROUND_BEGIN = AIM_SOUTHWEST,
-    AIM_AROUND_END   = AIM_NORTHEAST
-};
-
-enum advanced_inv_sortby {
-    SORTBY_NONE,
-    SORTBY_NAME,
-    SORTBY_WEIGHT,
-    SORTBY_VOLUME,
-    SORTBY_CHARGES,
-    SORTBY_CATEGORY,
-    SORTBY_DAMAGE,
-    SORTBY_AMMO,
-    SORTBY_SPOILAGE
-};
-
-// be explicit with the values
-enum aim_entry {
-    ENTRY_START     = 0,
-    ENTRY_VEHICLE   = 1,
-    ENTRY_MAP       = 2,
-    ENTRY_RESET     = 3
-};
-
-struct sort_case_insensitive_less : public std::binary_function< char, char, bool > {
-    bool operator()( char x, char y ) const {
-        return toupper( static_cast< unsigned char >( x ) ) < toupper( static_cast< unsigned char >( y ) );
-    }
-};
-
-void advanced_inv();
-
-/**
- * Cancels ongoing move all action.
- * TODO: Make this not needed.
- */
-void cancel_aim_processing();
-
+enum aim_location;
+enum advanced_inv_sortby;
+struct sort_case_insensitive_less;
 struct advanced_inv_listitem;
+class hybrid_inventory_pane;
 
-struct advanced_inv_sorter {
-    advanced_inv_sortby sortby;
-    advanced_inv_sorter(advanced_inv_sortby sort)
-    {
-        sortby = sort;
-    };
-    bool operator()(const advanced_inv_listitem &d1, const advanced_inv_listitem &d2);
-};
-
-class advanced_inventory_pane;
+void hybrid_inv();
 
 /**
  * Defines the source of item stacks.
  */
-struct advanced_inv_area {
+struct hybrid_inv_area {
     const aim_location id;
     // Used for the small overview 3x3 grid
     int hscreenx = 0;
@@ -131,27 +54,30 @@ struct advanced_inv_area {
     // maximal count / volume of items there.
     int max_size;
 
-    advanced_inv_area( aim_location id ) : id( id ) {}
-    advanced_inv_area( aim_location id, int hscreenx, int hscreeny, tripoint off, std::string name,
+    hybrid_inv_area( aim_location id ) : id( id ) {}
+    hybrid_inv_area( aim_location id, int hscreenx, int hscreeny, tripoint off, std::string name,
                        std::string shortname ) : id( id ), hscreenx( hscreenx ),
         hscreeny( hscreeny ), off( off ), name( name ), shortname( shortname ), pos( 0, 0, 0 ),
-        canputitemsloc( false ), veh( nullptr ), vstor( -1 ), volume( 0_ml ), weight( 0_gram ),
+        canputitemsloc( false ), veh( nullptr ), vstor( -1 ), volume( 0 ), weight( 0 ),
         max_size( 0 ) {
     }
 
     void init();
+    void init( hybrid_inventory_pane & pane );
     // if you want vehicle cargo, specify so via `in_vehicle'
-    units::volume free_volume( bool in_vehicle = false ) const;
+    units::volume free_volume( hybrid_inventory_pane &pane, bool in_vehicle = false ) const;
     int get_item_count() const;
     // Other area is actually the same item source, e.g. dragged vehicle to the south and AIM_SOUTH
-    bool is_same( const advanced_inv_area &other ) const;
+    bool is_same( const hybrid_inv_area &other ) const;
     // does _not_ check vehicle storage, do that with `can_store_in_vehicle()' below
-    bool canputitems( const advanced_inv_listitem *advitem = nullptr );
+    bool canputitems();
+    bool canputitems( hybrid_inventory_pane &pane );
     // if you want vehicle cargo, specify so via `in_vehicle'
-    item *get_container( bool in_vehicle = false );
-    void set_container( const advanced_inv_listitem *advitem );
-    bool is_container_valid( const item *it ) const;
-    void set_container_position();
+    item *get_container( hybrid_inventory_pane &pane );
+    units::volume get_container_remaing_capacity( hybrid_inventory_pane &pane ) const;
+    void find_parents( hybrid_inventory_pane &pane, std::vector<item *> &parents ) const;
+    void set_container( hybrid_inventory_pane &pane );
+    void set_container_position( hybrid_inventory_pane &pane );
     aim_location offset_to_location() const;
     bool can_store_in_vehicle() const {
         // disallow for non-valid vehicle locations
@@ -166,109 +92,19 @@ struct advanced_inv_area {
 class item_category;
 
 /**
- * Entry that is displayed in a adv. inv. pane. It can either contain a
- * single item or a category header or nothing (empty entry).
- * Most members are used only for sorting.
- */
-struct advanced_inv_listitem {
-    typedef std::string itype_id;
-    /**
-     * Index of the item in the itemstack.
-     */
-    int idx;
-    /**
-     * The location of the item, never AIM_ALL.
-     */
-    aim_location area;
-    // the id of the item
-    itype_id id;
-    // The list of items, and empty when a header
-    std::list<item *> items;
-    /**
-     * The displayed name of the item/the category header.
-     */
-    std::string name;
-    /**
-     * Name of the item (singular) without damage (or similar) prefix, used for sorting.
-     */
-    std::string name_without_prefix;
-    /**
-     * Whether auto pickup is enabled for this item (based on the name).
-     */
-    bool autopickup;
-    /**
-     * The stack count represented by this item, should be >= 1, should be 1
-     * for anything counted by charges.
-     */
-    int stacks;
-    /**
-     * The volume of all the items in this stack, used for sorting.
-     */
-    units::volume volume;
-    /**
-     * The weight of all the items in this stack, used for sorting.
-     */
-    units::mass weight;
-    /**
-     * The item category, or the category header.
-     */
-    const item_category *cat;
-    /**
-     * Is the item stored in a vehicle?
-     */
-    bool from_vehicle;
-    /**
-     * Whether this is a category header entry, which does *not* have a reference
-     * to an item, only @ref cat is valid.
-     */
-    bool is_category_header() const;
-
-    /** Returns true if this is an item entry */
-    bool is_item_entry() const;
-    /**
-     * Create a category header entry.
-     * @param cat The category reference, must not be null.
-     */
-    advanced_inv_listitem( const item_category *cat );
-    /**
-     * Creates an empty entry, both category and item pointer are null.
-     */
-    advanced_inv_listitem();
-    /**
-     * Create a normal item entry.
-     * @param an_item The item pointer. Must not be null.
-     * @param index The index
-     * @param count The stack size
-     * @param area The source area. Must not be AIM_ALL.
-     * @param from_vehicle Is the item from a vehicle cargo space?
-     */
-    advanced_inv_listitem( item *an_item, int index, int count,
-                           aim_location area, bool from_vehicle );
-    /**
-     * Create a normal item entry.
-     * @param list The list of item pointers.
-     * @param index The index
-     * @param area The source area. Must not be AIM_ALL.
-     * @param from_vehicle Is the item from a vehicle cargo space?
-     */
-    advanced_inv_listitem( const std::list<item *> &list, int index,
-                           aim_location area, bool from_vehicle );
-};
-
-/**
  * Displayed pane, what is shown on the screen.
  */
-class advanced_inventory_pane
+class hybrid_inventory_pane
 {
     private:
-        aim_location area = NUM_AIM_LOCATIONS;
+        aim_location area = NUM_AIM_LOCATIONS_HIS;
         aim_location prev_area = area;
         // pointer to the square this pane is pointing to
         bool viewing_cargo = false;
         bool prev_viewing_cargo = false;
     public:
         // set the pane's area via its square, and whether it is viewing a vehicle's cargo
-        void set_area( advanced_inv_area &square, bool in_vehicle_cargo = false ) {
+        void set_area( hybrid_inv_area &square, bool in_vehicle_cargo = false ) {
             prev_area = area;
             prev_viewing_cargo = viewing_cargo;
             area = square.id;
@@ -311,7 +147,7 @@ class advanced_inventory_pane
          */
         bool redraw;
 
-        void add_items_from_area( advanced_inv_area &square, bool vehicle_override = false );
+        void add_items_from_area( hybrid_inv_area &square, bool vehicle_override = false );
         /**
          * Makes sure the @ref index is valid (if possible).
          */
@@ -348,6 +184,14 @@ class advanced_inventory_pane
          * Insert additional category headers on the top of each page.
          */
         void paginate( size_t itemsPerPage );
+
+        int container_location;
+        UID container_uid;
+        std::string container_desc;
+        void reset_container();
+        // returns either area, if not AIM_ALL, or uistate.adv_inv_last_popup_dest
+        aim_location destination() const;
+
     private:
         /** Scroll to next non-header entry */
         void skip_category_headers( int offset );
@@ -357,11 +201,11 @@ class advanced_inventory_pane
         mutable std::map<std::string, std::function<bool( const item & )>> filtercache;
 };
 
-class advanced_inventory
+class hybrid_inventory
 {
     public:
-        advanced_inventory();
-        ~advanced_inventory();
+        hybrid_inventory();
+        ~hybrid_inventory();
 
         void display();
     private:
@@ -418,9 +262,9 @@ class advanced_inventory
          * Two panels (left and right) showing the items, use a value of @ref side
          * as index.
          */
-        std::array<advanced_inventory_pane, NUM_PANES> panes;
-        static const advanced_inventory_pane null_pane;
-        std::array<advanced_inv_area, NUM_AIM_LOCATIONS> squares;
+        std::array<hybrid_inventory_pane, NUM_PANES> panes;
+        static const hybrid_inventory_pane null_pane;
+        std::array<hybrid_inv_area, NUM_AIM_LOCATIONS_HIS> squares;
 
         catacurses::window head;
         catacurses::window left_window;
@@ -439,12 +283,12 @@ class advanced_inventory
 
         static std::string get_sortname( advanced_inv_sortby sortby );
         bool move_all_items( bool nested_call = false );
-        void print_items( advanced_inventory_pane &pane, bool active );
+        void print_items( hybrid_inventory_pane &pane, bool active );
         void recalc_pane( side p );
         void redraw_pane( side p );
         // Returns the x coordinate where the header started. The header is
         // displayed right of it, everything left of it is till free.
-        int print_header( advanced_inventory_pane &pane, aim_location sel );
+        int print_header( hybrid_inventory_pane &pane, aim_location sel );
         void init();
         /**
          * Translate an action ident from the input context to an aim_location.
@@ -454,12 +298,12 @@ class advanced_inventory
          * @return true if the action did refer to an location (which has been
          * stored in ret), false otherwise.
          */
-        static bool get_square( const std::string &action, aim_location &ret );
+        static bool get_square( const std::string action, aim_location &ret );
         /**
          * Show the sort-by menu and change the sorting of this pane accordingly.
          * @return whether the sort order was actually changed.
          */
-        bool show_sort_menu( advanced_inventory_pane &pane );
+        bool show_sort_menu( hybrid_inventory_pane &pane );
         /**
          * Checks whether one can put items into the supplied location.
          * If the supplied location is AIM_ALL, query for the actual location
@@ -470,14 +314,55 @@ class advanced_inventory
          */
         bool query_destination( aim_location &def );
         /**
-         * Move content of source container into destination container (destination pane = AIM_CONTAINER)
-         * @param src_container Source container
-         * @param dest_container Destination container
+         * Add the item to the destination area.
+         * @param destarea Where add the item to. This must not be AIM_ALL.
+         * @param new_item The item to add.
+         * @param count The amount to add items to add.
+         * @return Returns the amount of items that weren't addable, 0 if everything went fine.
          */
-        bool move_content( item &src_container, item &dest_container );
+        int add_item( aim_location destarea, item &new_item, int count = 1 );
+        /**
+         * Remove the item from source area. Must not be used on items with area
+         *      AIM_ALL or AIM_INVENTORY!
+         * @param sitem The item reference that should be removed, along with the source area.
+         * @param count The amount to move of said item.
+         * @return Returns the amount of items that weren't removable, 0 if everything went fine.
+         */
+        int remove_item( advanced_inv_listitem &sitem, int count = 1 );
+        /**
+         * Move content of source container into destination container (destination pane = AIM_CONTAINER)
+         * @param src Source container
+         * @param dest Destination container
+         */
+        bool move_content( item &src_container, item &dest_container, long amount_to_move );
+        item *get_container( hybrid_inventory_pane &pane );
+        long add_to_container( item *container, item *it, long amount );
+        void remove_from_container( advanced_inv_listitem &sitem, item *container, item *it, long amount );
+        void remove_charges_or_item( advanced_inv_listitem &sitem, item *it, long amount );
+        /**
+          * Move item into destination (source and / or destination pane = AIM_CONTAINER)
+          * Internally calls move_content for moving liquids if necessary
+          * @param spane Source pane
+          * @param dpane Destination pane
+          * @param amount_to_move Amount to move
+          */
+        bool move_item( hybrid_inventory_pane &spane, hybrid_inventory_pane &dpane,
+                        long amount_to_move );
+        /**
+         * Unloads content from selected container
+         * @param spane Source pane
+         * @param dpane Destination pane
+         */
+        bool unload_content( hybrid_inventory_pane &spane, hybrid_inventory_pane &dpane );
+        /**
+          * Checks if we are moving liquid or not
+          */
+        bool moving_liquid( const advanced_inv_listitem &sitem, hybrid_inventory_pane &dpane );
+        bool moving_liquid( const item &src, hybrid_inventory_pane &dpane );
+        bool same_pane( hybrid_inventory_pane &spane, hybrid_inventory_pane &dpane ) const;
         /**
          * Setup how many items/charges (if counted by charges) should be moved.
-         * @param destarea Where to move to. This must not be AIM_ALL.
+         * @param dpane Where to move to. This must not be AIM_ALL.
          * @param sitem The source item, it must contain a valid reference to an item!
          * @param action The action we are querying
          * @param amount The input value is ignored, contains the amount that should
@@ -486,7 +371,7 @@ class advanced_inventory
          *      should be moved. A return value of true indicates that amount now contains
          *      a valid item count to be moved.
          */
-        bool query_charges( aim_location destarea, const advanced_inv_listitem &sitem,
+        bool query_charges( hybrid_inventory_pane &dpane, const advanced_inv_listitem &sitem,
                             const std::string &action, long &amount );
 
         void menu_square( uilist &menu );
