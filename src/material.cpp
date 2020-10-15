@@ -70,6 +70,7 @@ void material_type::load( const JsonObject &jsobj, const std::string & )
     optional( jsobj, was_loaded, "specific_heat_solid", _specific_heat_solid );
     optional( jsobj, was_loaded, "latent_heat", _latent_heat );
     optional( jsobj, was_loaded, "freeze_point", _freeze_point );
+    optional( jsobj, was_loaded, "breathability", _breathability );
 
     assign( jsobj, "salvaged_into", _salvaged_into );
     optional( jsobj, was_loaded, "repaired_with", _repaired_with, itype_id::NULL_ID() );
@@ -233,6 +234,11 @@ int material_type::freeze_point() const
 int material_type::density() const
 {
     return _density;
+}
+
+int material_type::breathability() const
+{
+    return _breathability;
 }
 
 bool material_type::edible() const
