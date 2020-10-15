@@ -204,6 +204,7 @@ int wash_soft_items( player *, item *, bool, const tripoint & );
 int water_purifier( player *, item *, bool, const tripoint & );
 int weak_antibiotic( player *, item *, bool, const tripoint & );
 int weather_tool( player *, item *, bool, const tripoint & );
+int wet_o_meter_tool( player *, item *, bool, const tripoint & );
 
 // MACGUFFINS
 
