@@ -39,6 +39,9 @@
 
 #define dbg(x) DebugLog((x),D_GAME) << __FILE__ << ":" << __LINE__ << ": "
 
+static const itype_id itype_water( "water" );
+static const itype_id itype_water_clean( "water_clean" );
+
 // All serialize_liquid_source functions should add the same number of elements to the vectors of
 // the activity. This makes it easier to distinguish the values of the source and the values of the target.
 static void serialize_liquid_source( player_activity &act, const vehicle &veh, const int part_num,
@@ -300,6 +303,13 @@ static bool get_liquid_target( item &liquid, const item *const source, const int
         menu.selected = menu.entries.size() - 1;
     }
 
+    if( liquid.typeId() == itype_water || liquid.typeId() == itype_water_clean ) {
+        menu.addentry( -1, true, 'p', _( "Pour on yourself" ) );
+        actions.emplace_back( [&]() {
+            target.dest_opt = LD_PLAYER;
+        } );
+    }
+
     if( menu.entries.empty() ) {
         return false;
     }
@@ -405,6 +415,14 @@ static bool perform_liquid_transfer( item &liquid, const tripoint *const source_
             }
             transfer_ok = true;
             break;
+        case LD_PLAYER:
+        {
+            const bool all = source_mon || ( !source_veh && !source_pos );
+            player_character.assign_activity( player_activity( pour_activity_actor( liquid, all ) ) );
+            liquid.charges = all ? 0 : liquid.charges - 1;
+            transfer_ok = true;
+            break;
+        }
         case LD_NULL:
         default:
             break;

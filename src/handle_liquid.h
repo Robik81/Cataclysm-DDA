@@ -17,7 +17,8 @@ enum liquid_dest : int {
     LD_ITEM,
     LD_VEH,
     LD_KEG,
-    LD_GROUND
+    LD_GROUND,
+    LD_PLAYER
 };
 
 struct liquid_dest_opt {
