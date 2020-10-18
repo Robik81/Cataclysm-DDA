@@ -1393,6 +1393,68 @@ std::unique_ptr<activity_actor> consume_activity_actor::deserialize( JsonIn &jsi
     return actor.clone();
 }
 
+void pour_activity_actor::start( player_activity &act, Character &/*who*/ )
+{
+    act.moves_total = to_moves<int>( 10_turns );
+    act.moves_left = act.moves_total;
+}
+
+void pour_activity_actor::finish( player_activity &act, Character &who )
+{
+    act.set_to_null();
+
+    double pct = 0.0;
+    const auto parts =  who.get_all_body_parts();
+    for( const bodypart_id &bp : parts ) {
+        const int charges_mult = all ? pour_item.charges : 1;
+        const double drench_capacity = static_cast<double>( who.get_part_drench_capacity( bp ) );
+        const double min = drench_capacity / 30 * charges_mult;
+        const double max = drench_capacity / 20 * charges_mult;
+        const double rng = rng_float( min, max );
+
+        who.mod_part_wetness( bp, roll_remainder( rng )  );
+
+        // Safety measure to keep wetness within bounds
+        if( who.get_part_wetness( bp ) < 0 ) {
+            who.set_part_wetness( bp, 0 );
+        }
+        if( who.get_part_wetness( bp ) > who.get_part_drench_capacity( bp ) ) {
+            who.set_part_wetness( bp, who.get_part_drench_capacity( bp ) );
+        }
+
+        pct += who.get_part_wetness_percentage( bp );
+    }
+    pct /= parts.size();
+
+    who.add_msg_if_player( _( "You poured some %s on yourself.\n%s" ), pour_item.tname(),
+                           pct > 0.5f ? _( "You are drenched." ) :
+                           pct > 0.2f ? _( "You are wet." ) :
+                           pct > 0.1f ? _( "You are slightly wet." ) :
+                           _( "You are moist." ) );
+}
+
+void pour_activity_actor::serialize( JsonOut &jsout ) const
+{
+    jsout.start_object();
+
+    jsout.member( "pour_item", pour_item );
+    jsout.member( "all", all );
+
+    jsout.end_object();
+}
+
+std::unique_ptr<activity_actor> pour_activity_actor::deserialize( JsonIn &jsin )
+{
+    pour_activity_actor actor( {}, {} );
+
+    JsonObject data = jsin.get_object();
+
+    data.read( "pour_item", actor.pour_item );
+    data.read( "all", actor.all );
+
+    return actor.clone();
+}
+
 void try_sleep_activity_actor::start( player_activity &act, Character &/*who*/ )
 {
     act.moves_total = to_moves<int>( duration );
@@ -2187,6 +2249,7 @@ deserialize_functions = {
     { activity_id( "ACT_MOVE_ITEMS" ), &move_items_activity_actor::deserialize },
     { activity_id( "ACT_OPEN_GATE" ), &open_gate_activity_actor::deserialize },
     { activity_id( "ACT_PICKUP" ), &pickup_activity_actor::deserialize },
+    { activity_id( "ACT_POUR" ), &consume_activity_actor::deserialize },
     { activity_id( "ACT_STASH" ), &stash_activity_actor::deserialize },
     { activity_id( "ACT_TRY_SLEEP" ), &try_sleep_activity_actor::deserialize },
     { activity_id( "ACT_UNLOAD_MAG" ), &unload_mag_activity_actor::deserialize },

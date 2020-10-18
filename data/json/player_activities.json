@@ -876,6 +876,13 @@
     "based_on": "time"
   },
   {
+    "id": "ACT_POUR",
+    "type": "activity_type",
+    "activity_level": "NO_EXERCISE",
+    "verb": "pouring",
+    "based_on": "speed"
+  },
+  {
     "id": "ACT_WORKOUT_HARD",
     "type": "activity_type",
     "activity_level": "EXTRA_EXERCISE",
